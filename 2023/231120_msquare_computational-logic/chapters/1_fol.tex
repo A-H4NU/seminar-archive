@@ -1,0 +1,424 @@
+\documentclass[../231120_msquare_computational-logic.tex]{subfiles}
+
+\begin{document}
+\subsection{Language}
+
+\begin{frame}{Language}
+    언어는 문장들로 이루어지고, 각 문장은 문자로 이루어짐.
+    \begin{itemize}
+        \ii 한국어의 문장을 구성하는 문자는 한글+문장부호.
+        \ii 일본어의 문장을 구성하는 문자는 칸지+가나+문장부호.
+        % \ii 영어의 문장을 구성하는 문자는 알파벳+문장부호로 이루어짐.
+    \end{itemize} \pause
+    \begin{block}{Definition: Alphabet \(\Sigma\)}
+        An alphabet is a (finite or countably infinite) set of symbols.
+        \begin{itemize}
+            \ii e.g. \(\Sigma = \{\,a,b,c\,\}\)
+        \end{itemize}
+    \end{block} \pause
+    \begin{block}{Definition: Strings \(\Sigma^\ast\)}
+        The set of \ul{strings}: \(\Sigma^\ast \triangleq \bigcup_{n=0}^\infty \Sigma^n\)
+        \begin{itemize}
+            \ii \(\Sigma^\ast\)는 \(\Sigma\)의 알파벳을 임의의 길이만큼 늘여 놓은 것들의 집합
+            \ii e.g. \(\Sigma^\ast = \{\,\epsilon, a, b, c, a a, a b, a c, b a, \cdots\,\}\)
+                \footnote{\(\epsilon\): zero-length empty string}
+            % \ii e.g. \ttt{Python}의 \ttt{str} 같은 것
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}{Language}
+    \begin{block}{Definition: Language \(\mcal L\)}
+        A language is a subset of \(\Sigma^\ast\). 
+        \begin{itemize}
+            \ii e.g. \(\mcal L = \{\,a,abab, aca\,\} \subseteq \{\,a,b,c\,\}^\ast\)
+        \end{itemize}
+    \end{block} \pause
+
+    \begin{alertblock}{}
+        아니 이러면 language가 \alert{너무 많지 않나}? \pause
+        \begin{itemize}
+            \ii 그래서 우리는 특별하게 생긴 language만을 대상으로 해서
+                \ul{현실성} 있으면서도 충분히 \ul{일반적인} 결과를 얻고자 함.
+            \ii 그것들 중 하나가 \alert{First-Order Logic}.
+        \end{itemize}
+    \end{alertblock}
+\end{frame}
+
+\subsection{First-Order Logic}
+\begin{frame}{Preview}
+    First-Order Logic(FOL)의 문장은 대충 이렇게 \ul{생김}:
+    \[
+        \lnot(x > 0) \lor \exs z,\ z \times z = x
+    \]
+    \[
+        \forall x,\  \forall y,\  x \ge y \ \implies\ x + 1 \ge y
+    \]
+    \[
+        \veps > 0 \ \implies\  \exs \delta,\ \delta > 0 \land
+        \big(\fall x,\  |x-a| < \delta \ \implies\ |f(x)-f(a)| < \veps\big)
+    \]
+    \pause
+
+    \begin{alertblock}{}
+        우리는 저 문장들의 \alert{참/거짓을 따지지 않음}! 아직은:
+        \begin{itemize}
+            \ii \(a = b\)에 ``\(a\)와 \(b\)가 같다''의 의미가 \alert{없고},
+            \ii \(|x|\)에 ``x의 절댓값''의 의미가 \alert{없으며},
+            \ii \(A \Rightarrow B\)에 ``\(A\)이면 \(B\)이다''의 의미가 \alert{없음}.
+        \end{itemize}
+        뒤의 semantics 부분까지 stay tuned\ldots
+    \end{alertblock}
+\end{frame}
+
+\subsection{Syntax of FOL}
+\begin{frame}{Logical Symbol}
+    \[
+        \alert{(\lnot x} > 0\alert) \alert\lor \alert{\exs z},\ \alert z \times \alert z = \alert x
+    \]
+    \[
+        \alert{\forall x,\ \forall y,}\  \alert x \ge \alert y \alert{\Longrightarrow} \alert x + 1 \ge \alert y
+    \]
+    \[
+        \alert\veps > 0 \alert{\Longrightarrow}  \alert{\exs \delta,}\  \alert\delta > 0 \alert\land
+        \alert{\big(\fall x,}\  |\alert{x}-\alert a| < \alert \delta \alert{\Longrightarrow}
+        |f\alert{(x)}-f\alert{(a)}| < \alert{\veps\big)}
+    \]
+
+    빨간색으로 칠해진 것들은 \ul{logical symbol}이라고 부름.
+    얘네들은 FOL language의 alphabet의 \ul{기본 구성품}.
+
+    \begin{block}{Definition: Logical Symbol}
+    \[
+        \{\,
+            \underbrace{\forall, \exists,}_\text{logical quantifiers}
+            \overbrace{\land, \lor, \Rightarrow, \lnot,}^\text{logical connectives}
+            \underbrace{(, ), ``," ,}_\text{punctuation symbols}
+            \overbrace{\top, \bot}^\text{true/false}
+        \}
+    \]
+    \[
+        \cup \underbrace{(\text{a set of countably infinite letters})}_\text{variables}
+        \subseteq \Sigma
+    \]
+    \end{block}
+\end{frame}
+
+\begin{frame}{Non-logical Symbol (Signature)}
+    공통적인 alphabet 말고도 FOL Language마다 다를 수 있는 alphabet도 넣을 수 있도록 하자.
+    이런 alphabet들을 \ul{non-logical symbol}이라고 하는데,
+    이들을 통해 FOL language를 unique하게 정할 것이므로, 이들을 \ul{signature}라고도 부른다.
+    \pause
+
+    \begin{block}{Definition: Signature \(\sigma = (\mcal F, \mcal R, \mrm{ar})\)}
+        A signature is a tuple \(\sigma = (\mcal F, \mcal R, \mrm{ar})\) where
+        \begin{itemize}
+            \ii \(\mcal F\) is a finite set of \alert{function symbols}.
+            \ii \(\mcal R\) is a finite set of \alert{relation symbols}.
+            \ii \(\mrm{ar}\) is a function \(\mrm{ar}: \mcal F \cup \mcal R \to \NN_0\).
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}{Non-logical Symbol (Signature)}
+    \begin{block}{Definition: Signature \(\sigma = (\mcal F, \mcal R, \mrm{ar})\)}
+        A signature is a tuple \(\sigma = (\mcal F, \mcal R, \mrm{ar})\) where
+        \begin{itemize}
+            \ii \(\mcal F\) is a finite set of \alert{function symbols}.
+                \begin{itemize}
+                    \ii e.g. \(\mcal F = \{\,f,g,h,+,-,\times\,\}\).
+                \end{itemize}
+            \ii \(\mcal R\) is a finite set of \alert{relation symbols}.
+                \begin{itemize}
+                    \ii e.g. \(\mcal R = \{\,=,\le\,\}\).
+                \end{itemize}
+            \ii \(\mrm{ar}\) is a function \(\mrm{ar}: \mcal F \cup \mcal R \to \NN_0\).
+                \begin{itemize}
+                    \ii \alert{Arity} function \(\mrm{ar}\)는
+                        function/relation이 몇 개의 인자를 받는지 나타냄.
+                    \ii 아직도 \(f\), \(+\), \(\le\) 등의 symbol에는 의미가 없으므로,
+                        문법을 정의하기 위한 목적으로 필요함.
+                        (다음 페이지에서 설명)
+                    \ii e.g. \(\mrm{ar}(+) = 2, \mrm{ar}(\le) = 2\).
+                \end{itemize}
+        \end{itemize}
+    \end{block}
+    
+    \pause
+    \begin{alertblock}{}
+        FOL Language의 signature \(\sigma = (\mcal F, \mcal R, \mrm{ar})\)이 주어지면,
+        language의 alphabets \(\Sigma\)는
+        \alert{\((\text{logical symbols}) \cup \mcal F \cup \mcal R\)}로 결정됨.
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{FOL Language}
+    \begin{block}{Definition: FOL Language \(\mcal L\)}
+        주어진 signature \(\sigma = (\mcal F, \mcal R, \mrm{ar})\)에 대해,
+        alphabet \(\Sigma = (\text{logical symbols}) \cup \mcal F \cup \mcal R\) 위에서
+        \alert{\(\sigma\)에 대응}되는 언어 \(\mcal L \subseteq \Sigma^\ast\)은
+        `항'을 나타내는 집합 \(\mcal L_\text{Term}\)과 함께
+        다음을 만족하는 \alert{가장 작은 집합}으로 정의된다.
+        \begin{itemize}
+            \ii \(\mcal L_\text{Term} \ni x\) \hfill for each \alert{variable} \(x\)
+            \ii \(\mcal L_\text{Term} \ni f(t_1, \cdots, t_{\alert{\mrm{ar}(f)}})\)
+                \hfill for each \alert{\(f \in \mcal F\)} and \(t_i \in \mcal L_\text{Term}\)
+            \ii \(\mcal L \ni \top, \bot\)
+            \ii \(\mcal L \ni R(t_1, \cdots, t_{\alert{\mrm{ar}(R)}})\)
+                \hfill for each \alert{\(R \in \mcal R\)} and \(t_i \in \mcal L_\text{Term}\)
+            \ii \(\mcal L \ni \lnot A,\ A \land B,\ A \lor B,\ A \Rightarrow B\)
+                \hfill for each \(A, B \in \mcal L\)
+            \ii \(\mcal L \ni \forall x\ A,\ \exs x\ A\)
+                \hfill for each \(A \in \mcal L\) and variable \(x\)
+        \end{itemize}
+    \end{block}
+    \pause
+    \begin{alertblock}{}
+        \(\mcal L_\text{Term}\)은 `항처럼 생긴 것들'의 집합,
+        \(\mcal L\)은 `명제처럼 생긴 것들'의 집합
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{FOL Language}
+    \begin{block}{}
+        \footnotesize
+        \begin{itemize}
+            \ii \(\mcal L_\text{Term} \ni x\) \hfill for each \alert{variable} \(x\)
+            \ii \(\mcal L_\text{Term} \ni f(t_1, \cdots, t_{\alert{\mrm{ar}(f)}})\)
+                \hfill for each \alert{\(f \in \mcal F\)} and \(t_i \in \mcal L_\text{Term}\)
+            \ii \(\mcal L \ni \top, \bot\)
+            \ii \(\mcal L \ni R(t_1, \cdots, t_{\alert{\mrm{ar}(R)}})\)
+                \hfill for each \alert{\(R \in \mcal R\)} and \(t_i \in \mcal L_\text{Term}\)
+            \ii \(\mcal L \ni \lnot A,\ A \land B,\ A \lor B,\ A \Rightarrow B\)
+                \hfill for each \(A, B \in \mcal L\)
+            \ii \(\mcal L \ni \forall x\ A,\ \exs x\ A\)
+                \hfill for each \(A \in \mcal L\) and variable \(x\)
+        \end{itemize}
+    \end{block}
+    \pause
+    \begin{exampleblock}{}
+        \begin{itemize}
+            \ii \(\mcal L_\text{Term} \cap \mcal L = \OO\).
+                \pause
+            \ii \(\mcal L_\text{Term}\)의 원소는 \alert{공간의 원소}를 \alert{의미}하게 될 예정.
+            \ii \(\mcal L\)의 원소는 \alert{명제의 진리치}를 \alert{의미}하게 될 예정.
+                \pause
+            \ii \(A \in \mcal L\)에서 \(\fall\), \(\exs\)에 묶여 있지 않은 variable을
+                \alert{free-variable}이라 함.
+            \ii \(A \in \mcal L\)에 free variable이 없으면
+                \(A\)를 \(\mcal L\)-sentence라고 부름.
+                \(\mcal L_\text{S} = (\mcal L\text{-sentence들의 집합})\).
+        \end{itemize}
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{FOL Language: Example}
+    Let \(\sigma = (\mcal F, \mcal R, \mrm{ar})\) where
+    \begin{itemize}
+        \ii \(\mcal F = \{\,S, \oplus, \ol 0, \ol 1\,\}\)
+        \ii \(\mcal R = \{\,=, \le\,\}\)
+        \ii \(\mrm{ar}(\ol 0) = \mrm{ar}(\ol 1) = 0\) \hfill i.e., \alert{constant symbols} \\
+            \(\mrm{ar}(S) = 1\), \(\mrm{ar}(\oplus) = \mrm{ar}(=) = \mrm{ar}(\le) = 2\).
+    \end{itemize}
+
+    Then,
+    \begin{itemize}
+        \ii \(\mcal L_\text{Term} \ni \ol 0, \ol 1\)
+        \ii \(\mcal L_\text{Term} \ni \oplus \big(S(S(\ol 1)), \oplus(\ol 1, S(\ol 1))\big)\)
+            \hfill {\footnotesize\(S(S(\ol 1)) \oplus \big( \ol 1 \oplus S(\ol 1) \big)\) in infix}
+        \ii \(\mcal L_\text{Term} \not\ni \quad \oplus (\ol 0, \ol 1, S(x))\)
+            \hfill {\footnotesize violates arity}
+        \ii \(\mcal L \ni \quad\le (S(x), S(y)) \ \Rightarrow\ \le (x, y)\)
+            \hfill {\footnotesize\(S(x) \le S(y) \ \Rightarrow\ x \le y\) in infix}
+        \ii \(\mcal L \setminus \mcal L_\text{S} \ni \quad \exs y\ \le \big(S(y), \oplus(x, \ol 1)\big)\) 
+            \hfill {\footnotesize \(x\)가 free variable}
+        \ii \(\mcal L_\text{S} \ni \quad \alert{\forall x}\ \exs y\ \le \big(S(y), \oplus(x, \ol 1)\big)\) 
+            \hfill {\footnotesize 위 예시의 \alert{universal closure}}
+    \end{itemize}
+\end{frame}
+
+\subsection{Semantics of FOL}
+\begin{frame}{So far...}
+    이때까지 한 것:
+    \begin{center}
+        \fbox{
+            Signature \(\sigma = (\mcal F, \mcal R, \mrm{ar})\) 넣어서
+            FOL Language \(\mcal L \subseteq \Sigma^\ast\) 만들기
+        }
+    \end{center}
+    \pause
+
+    \begin{alertblock}{}
+        이제부터 할 것:
+        \begin{itemize}
+            \ii 각 ``function symbol'' \(f \in \mcal F\)를 실제 함수로 대응시키고,
+            \ii 각 ``relation symbol'' \(R \in \mcal R\)를 실제 relation로 대응시키고,
+            \ii 각 ``문자열'' \(t \in \mcal L_\text{Term}\)을 전체 공간의 원소로 대응시켜서,
+            \ii 각 ``문자열'' \(A \in \mcal L\)을 진리치(True/False)로 대응시킬 예정
+        \end{itemize}
+    \end{alertblock}
+
+    \begin{center}
+        \fbox{
+            \(\text{전체 공간} = U, \quad
+            \text{대응} = \text{???}\)
+        }
+    \end{center}
+\end{frame}
+
+\begin{frame}{Interpretation Function \(\mcal I\)}
+
+    Interpretation function \(\mcal I\)의 역할:
+    \begin{center}
+        \fbox{
+        \begin{minipage}{.8\textwidth}
+            \center
+            각 function/relation \alert{symbol}들을 \\
+            \alert{specific}한 function/relation으로 대응시킴
+        \end{minipage}
+        }
+    \end{center}
+    즉, 문자열의 세계을 수학 세상으로 \ul{해석}함. \pause
+    
+    \vspace*{1em}
+
+    상식적으로 interpretation function \(\mcal I\)는 다음을 만족해야 함:
+    \begin{itemize}
+        \ii \(\mcal I(f) \colon U^{\mrm{ar}(f)} \to U\) \hfill for each \(f \in \mcal F\)
+        \ii \(\mcal I(R) \subseteq U^{\mrm{ar}(R)}\) \hfill for each \(R \in \mcal R\)
+    \end{itemize}
+    \pause
+
+    \begin{block}{Definition: \(\mcal L\)-structure \(\mcal M = (U, \mcal I)\)}
+        FOL language \(\mcal L\)에 대해,
+        전체 공간 \(U\)와 interpretation function \(\mcal I\)가 주어지면
+        \(\mcal M = (U, \mcal I)\)를 \alert{\(\mcal L\)-structure}라고 함.
+    \end{block}
+\end{frame}
+
+\begin{frame}{Semantics \(v_{\mcal M}\)}
+    \begin{block}{Definition: Semantics \(v_{\mcal M}\)}
+        \(v_{\mcal M} \colon \mcal L_\text{Term} \cup \mcal L \to U \cup \{T, F\}\)
+        is defined inductively by: \pause
+        \begin{itemize}
+            \ii \(v_{\mcal M}(f(t_1, \cdots, t_n)) = \mcal I(f)(v_{\mcal M}(t_1), \cdots, v_{\mcal M}(t_n)) \in U\)
+            \ii \(v_{\mcal M}(R(t_1, \cdots, t_n)) = \begin{cases}
+                    T & \text{if } (v_{\mcal M}(t_1), \cdots, v_{\mcal M}(t_n)) \in \mcal I(R) \\
+                    F & \text{otherwise}
+                \end{cases}\) \pause
+            \ii \(v_{\mcal M}(A \land B) = \begin{cases}
+                    T & \text{if } v_{\mcal M}(A) = v_{\mcal M}(B) = T \\
+                    F & \text{otherwise}
+                \end{cases}\)
+            \ii \(v_{\mcal M}(A \Rightarrow B) = v_{\mcal M}(\lnot A \lor B)\)
+            \ii \(v_{\mcal M}(\fall x\ A) = \begin{cases}
+                    T & \text{if } v_{\mcal M}(A[a/x]) = T \text{ for all } a \in U
+                    \footnote{\(A[a/x]\)는 \(A\)의 free variable \(x\)에 \(a\)를 대입한 것}\\
+                    F & \text{otherwise}
+                \end{cases}\)
+            \ii \(v_{\mcal M}(A \lor B)\), \(v_{\mcal M}(\lnot A)\), \(v_{\mcal M}(\exs x\ A)\)
+                도 비슷하게 정의
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}{Model}
+    \(A \in \LS\) and \(S \subseteq \LS\) (\(\Lang\)-sentences)
+    \begin{block}{Definition: Truth}
+        Given an \(\Lang\)-structure \(\mcal M\),
+        \begin{itemize}
+            \ii If \(v_{\mcal M}(A) = T\), we write \(\mcal M \vDash A\). (\(A\) is true in \(\mcal M\).)
+            \ii If \(\mcal M \vDash A\) for all \(A \in S\), we write \(\mcal M \vDash S\).
+        \end{itemize}
+    \end{block}
+    \begin{alertblock}{}
+        \begin{enumerate}
+            \ii \(A\)의 진리치는 \ul{\(\mcal M\)에 의존}함!
+            \ii 모든 \(A, \mcal M\)에 대해 \(\mcal M \vDash A\)거나 \(\mcal M \vDash \lnot A\)임
+        \end{enumerate}
+        
+    \end{alertblock} \pause
+
+    \begin{block}{Definition: Model}
+        Given an \(\Lang\)-structure \(\mcal M\),
+        if \(\mcal M \vDash S\), we say \(\mcal M\) is a \ul{model} of \(S\).
+    \end{block}
+    \begin{alertblock}{}
+        \(S\)의 model \(\mcal M\)은 모든 \(A \in S\)를 참으로 만드는 해석!
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{Model: Example}
+    \begin{block}{}
+        Define a FOL Language \(\Lang_0 = (\mcal F, \mcal R, \mrm{ar})\) by
+        \begin{itemize}
+            \ii \(\mcal F = \{\ol 0, \mrm{next}, \mrm{add}\}\)
+            \ii \(\mcal R = \{=\}\).
+            \ii \(\mrm{ar}(\ol 0) = 0\), \(\mrm{ar}(\mrm{next}) = 1\),
+                \(\mrm{ar}(\mrm{add}) = \mrm{ar}(=) = 2\)
+        \end{itemize}
+        Let \(A = ``\exs x\ (\mrm{next}(x) = \mrm{add}(\ol 0, \ol 0))"\) be an \(\Lang\)-sentence.
+    \end{block} \pause
+    \begin{exampleblock}{\(\Lang\)-structure \(\mcal M_1 = (U_1, \mcal I_1)\)}
+        \begin{itemize}
+            \ii \(U_1 = \ZZ\)
+            \ii \(\mcal I_1(\ol 0) = 0\)
+            \ii \(\mcal I_1(\mrm{next})(x) = x + 1\) \hfill{\small \(+\): usual addition}
+            \ii \(\mcal I_1(\mrm{add})(x, y) = x + y\) \hfill{\small \(+\): usual addition}
+            \ii \(\mcal I_1(=) = \{(x,x) \mid x \in \ZZ\}\)
+        \end{itemize}
+        이 해석 아래에서 \(A\)는 참임. (\(\mcal M_1 \vDash A\))
+        즉, \(\mcal M_1\)은 \(\{A\}\)의 model.
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Model: Example}
+    \begin{block}{}
+        Define a FOL Language \(\Lang_0 = (\mcal F, \mcal R, \mrm{ar})\) by
+        \begin{itemize}
+            \ii \(\mcal F = \{\ol 0, \mrm{next}, \mrm{add}\}\)
+            \ii \(\mcal R = \{=\}\).
+            \ii \(\mrm{ar}(\ol 0) = 0\), \(\mrm{ar}(\mrm{next}) = 1\),
+                \(\mrm{ar}(\mrm{add}) = \mrm{ar}(=) = 2\)
+        \end{itemize}
+        Let \(A = ``\exs x\ (\mrm{next}(x) = \mrm{add}(\ol 0, \ol 0))"\) be an \(\Lang\)-sentence.
+    \end{block}
+    \begin{exampleblock}{\(\Lang\)-structure \(\mcal M_2 = (U_2, \mcal I_2)\)}
+        \begin{itemize}
+            \ii \(U_2 = \NN_0\)
+            \ii \(\mcal I_2(\ol 0) = 0\)
+            \ii \(\mcal I_2(\mrm{next})(x) = x + 1\) \hfill{\small \(+\): usual addition}
+            \ii \(\mcal I_2(\mrm{add})(x, y) = x + y\) \hfill{\small \(+\): usual addition}
+            \ii \(\mcal I_2(=) = \{(x,x) \mid x \in \ZZ\}\)
+        \end{itemize}
+        이 해석 아래에서 \(A\)는 거짓임. (\(\mcal M_2 \not\vDash A\))
+        즉, \(\mcal M_2\)는 \(A\)의 model이 아님.
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Logical Validity/Consequence}
+    \(A, B \in \LS\) and \(S \subseteq \LS\) (\(\Lang\)-sentences)
+    \begin{block}{Definition: Logical Consequence}
+        \begin{itemize}
+            \ii If \(\mcal M \vDash \alert B \ \implies\ \mcal M \vDash A\) for every \(\Lang\)-structure \(\mcal M\),
+                we say \(A\) is a \ul{logical consequence} of \(\alert B\)
+                and we write \(B \vDash A\).
+            \ii If \(\mcal M \vDash \alert S \ \implies\ \mcal M \vDash A\) for every \(\Lang\)-structure \(\mcal M\),
+                we say \(A\) is a \ul{logical consequence} of \(\alert S\)
+                and we write \(S \vDash A\).
+        \end{itemize}
+    \end{block}
+    \begin{block}{Definition: Logical Validity}
+        If \(\mcal M \vDash A\) for every \(\Lang\)-structure \(\mcal M\),
+        we say \(A\) is \ul{logically valid} and we write \(\vDash A\).
+    \end{block}
+    \pause
+    \begin{itemize}
+        \ii \(S \vDash A\)의 의미: \(S\)의 model \(\mcal M\)은 \(A\)를 true로
+            해석할 수밖에 없음. (e.g. \(A = B \lor C\))
+        \ii \(\vDash A\)의 의미: 모든 \(\Lang\)-structure \(\mcal M\)은 \(A\)의 model임.
+            즉, \(A\)는 syntax 단계에서부터 참인 해석만 허용.
+            (e.g. \(A = B \lor \lnot B\))
+    \end{itemize}
+\end{frame}
+\end{document}

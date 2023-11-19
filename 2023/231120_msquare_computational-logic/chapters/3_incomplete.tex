@@ -1,0 +1,290 @@
+\documentclass[../231120_msquare_computational-logic.tex]{subfiles}
+\begin{document}
+
+\begin{frame}{So far...}
+    이때까지 한 것:
+    \begin{center}
+        \fbox{
+            \begin{minipage}{.9\textwidth}
+                \begin{itemize}
+                    \ii Signature \((\mcal F, \mcal R, \mrm{ar})\) 넣어서
+                        FOL Language \(\mcal L\) 만들기
+                    \ii \(\Lang\)에 \(\Lang\)-structure \(\mcal M = (U, \mcal I)\)으로 의미를 부여하기
+                    \ii \(\Gamma \vDash A \Leftrightarrow \Gamma \vdash A\) (Soundness/Completeness of FOL)
+                \end{itemize}
+            \end{minipage}
+        }
+    \end{center}
+    \pause
+    \begin{alertblock}{}
+        이제부터 할 것:
+        \begin{itemize}
+            % \ii \(\Gamma \vdash A\)가 provable한 모든 \(A\)들의 집합(theorem들의 집합) 탐구
+            \ii PA/ZFC에서 Godel's First Incompleteness Theorem 증명
+                \begin{itemize}
+                    \ii 증명 과정에서 computability theory 향 첨가 예정
+                \end{itemize}
+        \end{itemize}
+    \end{alertblock}
+    \pause
+
+    \begin{alertblock}{Disclaimer}
+        \small
+        앞에서도 그랬지만, 이 부분에서 모든 것을 rigorous하게
+        설명할 경우 세미나 \(n\)시간 추가 예정.
+        \begin{itemize}
+            \ii 따라서 proof idea와 납득할 수 있을 정도의 근거만을 제시
+            \ii 그러니 양해를...
+        \end{itemize}
+    \end{alertblock}
+\end{frame}
+
+\subsection{Computablity}
+\begin{frame}{Computable Functions}
+    \begin{block}{Definition: Partial Function}
+        A partial function \(f \colon X \alert\rightharpoonup Y\) is a function
+        but \(f(x)\) may not be defined.
+        \footnotesize
+        \begin{itemize}
+            \ii \(f(x)\)가 정의되면 \(f(x) \downarrow\),
+            \ii \(f(x)\)가 정의되지 않으면 \(f(x) \uparrow\)로 나타냄
+        \end{itemize}
+    \end{block}
+    \pause
+
+    \begin{block}{Definition: Computable Function}
+        A partial function \(f \colon \NN \rightharpoonup \NN\) is computable if
+        there exists a \ttt{Python} program \(M_f\) such that
+        \begin{itemize}
+            \ii \(M(x) = f(x)\) if \(f(x) \downarrow\).
+            \ii \(M(x)\) never halts if \(f(x) \uparrow\).
+        \end{itemize}
+    \end{block}
+    \begin{alertblock}{}
+        \begin{itemize}
+            \ii 당연히 보통 Turing machine으로 정의하지만 어차피 equivalent
+            \ii \alert{Total} function \(f \colon \NN^k \to \NN\)에만 computability를 정의하는 책도
+        \end{itemize}
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{Halting Problem}
+    \(\mfr M\)을 모든 \ttt{Python} 프로그램의 집합이라 하자.
+    \begin{block}{Theorem (Halting Problem)}
+        The \ul{total} function \(f \colon \mfr M \times X \to \{0, 1\}\) defined by
+        \centerline{\(f(M, x) = \begin{cases}
+            1 & \text{if } M(x) \downarrow \\
+            0 & \text{if } M(x) \uparrow
+        \end{cases}\)}
+        is not computable.
+    \end{block}
+    \begin{block}{Proof (in the seminar on November 6th, 2023)}
+        Define \(\alpha(0) = 1\) and \(\alpha(1) \uparrow\).
+        If \(f\) is computable, then \(g(M) = \alpha(f(M, M))\) is also computable.
+        Then,
+        \centerline{\(g(g)\downarrow \ \Leftrightarrow\ f(g, g) = 0 \ \Leftrightarrow\ g(g) \uparrow\).}
+    \end{block}
+\end{frame}
+
+\begin{frame}{Consistency}
+    \begin{block}{Definition: Consistency}
+        \(\Gamma \subseteq \LS\) is consistent if there is no \(A \in \LS\) such that
+        \begin{itemize}
+            \ii \(\Gamma \vdash A\) and \(\Gamma \vdash \lnot A\).
+        \end{itemize}
+    \end{block} \pause
+
+    \begin{exampleblock}{만약 \(\Gamma\)가 inconsistent하면}
+        \begin{itemize}
+            \ii 모든 \(A \in \LS\)에 대해 \(\Gamma \vdash A\)가 provable함.
+            \ii \(\Gamma\)의 model \(\mcal M\)이 존재하지 않음.
+            \ii 이 뒤의 모든 내용이 의미없어짐.
+        \end{itemize}
+        그러니 이제부터 \(\Gamma\)의 consistency는 깔고 감.
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Representability}
+    
+    \begin{block}{Lemma (Representability of Computable Functions)}
+        \(\Gamma\)가 자연수를 표현할 수 있으면,
+        모든 computable function \(f \colon \NN \rightharpoonup \NN\)에 대해,
+        \begin{itemize}
+            \ii\(f(x) = y \ \implies\ \Gamma \vdash A_f(x, y)\)
+            \ii\(f(x) \neq y \ \implies\ \Gamma \vdash \lnot A_f(x, y)\)
+        \end{itemize}
+        인 \(A_f \in \Lang\)이 존재한다.
+    \end{block}
+    \pause
+    \begin{block}{Proof Idea}
+        \begin{itemize}
+            \ii Computable function의 여러 equivalent한 정의 중
+                recursion으로 정의된 함수를 computable로 정의하는 게 있음. (\(\mu\)-recursive functions)
+            \ii Recursive \(\to\) induction을 쓰기 좋음; induction으로 증명.
+        \end{itemize}
+    \end{block}
+
+\end{frame}
+
+\begin{frame}{Representability}
+    \begin{exampleblock}{\(+ \colon \NN^2 \to \NN\) is \(\mu\)-recursive}
+        \begin{itemize}
+            \ii \(g(x) = x\)
+            \ii \(h_1(x_1, x_2, x_3) = x_3\)
+            \ii \(h_2(x) = x + 1\)
+        \end{itemize}
+        는 \(\mu\)-recursive function의 base case들.
+        그러면
+        \begin{itemize}
+            \ii \(h(x_1, x_2, x_3) = h_1(h_2(x_1, x_2, x_3)) = x_3 + 1\)
+        \end{itemize}
+        도 \(\mu\)-recursive. 그러면
+        \begin{itemize}
+            \ii \(+(x, 0) = g(x) = x\)
+            \ii \(+(x, y + 1) = h(x, y, +(x, y)) = +(x, y) + 1\)
+        \end{itemize}
+        로 정의된 \(+\)도 \(\mu\)-recursive.
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Representability}
+    \begin{block}{Lemma}
+        The partial function \(f_\text{Halt} \colon \mfr M \times X \to \{0, 1\}\) defined by
+        \centerline{\(f_\text{Halt}(M, x) = \begin{cases}
+            1 & \text{if } M(x) \downarrow \\
+            0 \text{ or undefined} & \text{if } M(x) \uparrow
+        \end{cases}\)}
+        is \ul{computable}. (주의: 위 Halting problem의 함수와 다름)
+    \end{block}
+    \pause
+    \begin{block}{Proof.}
+        Simulate the \ttt{Python} program and wait until it halts.
+        \begin{center}
+            \fbox{
+                \begin{minipage}{.85\textwidth}
+                    \ttt{subprocess.run(['python', 'my\_program.py'])} \\
+                    \ttt{print(1)}
+                \end{minipage}
+            }
+        \end{center}
+        This is the \ttt{Python} program computes \(f_\text{Halt}\).
+        \qed
+    \end{block}
+\end{frame}
+
+\subsection{Undecidability}
+\begin{frame}{Undecidability of PA/ZFC}
+    \begin{block}{Definition: Decidability}
+        \(\Gamma \subseteq \LS\) is decidable if the total function \(f \colon \LS \to \{0,1\}\)
+        \centerline{
+            \(f(A) = \begin{cases}
+                1 & \text{if } \Gamma \vdash A \\
+                0 & \text{if }\Gamma \not\vdash A
+            \end{cases}\)
+        }
+        is computable.
+    \end{block}
+    % \begin{alertblock}{}
+    %     그런데 위 Lemma에 의해 \(\Gamma\)가 자연수를 표현할 수 있으면
+    %     \begin{itemize}
+    %         \ii\(f_\text{Halt}(M, x) = y \ \implies\ \Gamma \vdash A(M, x, y)\)
+    %         \ii\(f_\text{Halt}(M, x) \neq y \ \implies\ \Gamma \vdash \lnot A(M, x, y)\)
+    %     \end{itemize}
+    %     인 \(A \in \LS\)가 존재.
+    % \end{alertblock}
+\end{frame}
+
+\begin{frame}{Undecidability of PA/ZFC}
+    \begin{block}{Theorem (Undecidability of ZA/ZFC)}
+        자연수를 표현하는 \(\Gamma\)는 모두 undecidable하다.
+    \end{block}
+    \begin{block}{Proof.}
+        % \small
+        \begin{itemize}
+            \ii \(f_\text{Halt}(M, x) = y \ \implies\ \Gamma \vdash A(M, x, y)\)
+            \ii \(f_\text{Halt}(M, x) \neq y \ \implies\ \Gamma \vdash \lnot A(M, x, y)\)
+        \end{itemize}
+        인 \(A \in \LS\)가 존재함.
+        Computable function \(f\)에 대해,
+        \centerline{\(\phi_{f,x} \equiv ``\exs y\ A(M_f, x, y)"\)}
+        라고 정의. (\(\phi_{f,x}\)는 \(``M_f(x) \downarrow"\)의 의미.)
+        {Halting 여부와 equivalent한 문장을 구성했음!}
+
+        만약 \(\Gamma\)가 decidable이면 \(g \colon \LS \to \{0, 1\}\),
+        \(g(A) = 1\) iff \(\Gamma \vdash A\)인 g가 computable.
+        따라서, \ul{\(M_f(x) \downarrow \iff g(\phi_{f, x}) = 1\)},
+        halting problem의 undecidability와 모순!! \qed
+    \end{block}
+\end{frame}
+
+\begin{frame}{Semidecidability of PA/ZFC}
+    \begin{block}{Definition: Semidecidability}
+        \(\Gamma \subseteq \LS\) is semidecidable if the \ul{partial} function \(f \colon \LS \to \{0,1\}\)
+        \centerline{
+            \(f(A) = \begin{cases}
+                1 & \text{if } \Gamma \vdash A \\
+                0 \text{ or undefined} & \text{if }\Gamma \not\vdash A
+            \end{cases}\)
+        }
+        is computable.
+    \end{block}
+
+    \begin{block}{Theorem (Semidecidability is Global)}
+        Every \(\Gamma\) is semidecidable.
+    \end{block}
+    \begin{block}{Proof.}
+        Sequent \(\Gamma \vdash A\)의 proof는 tree형태.
+        모든 tree의 집합은 countable하니 하나씩 열거하면서
+        tree \(T\)가 \(\Gamma \vdash A\)인지 확인. (확인하는 작업은 computable.)
+        이런 program은 위 \(f\)를 계산함. \qed
+    \end{block}
+\end{frame}
+
+\subsection{Incompleteness}
+\begin{frame}{Incompleteness of PA/ZFC}
+    \begin{block}{Definition: Completeness}
+        \(\Gamma \subseteq \LS\) is complete if
+        \begin{itemize}
+            \ii it is either \(\Gamma \vdash A\) or \(\Gamma \vdash \lnot A\)
+        \end{itemize}
+        for each \(A \in \LS\).
+    \end{block}
+
+    \begin{block}{Theorem}
+        \(\Gamma_\text{PA}\) and \(\Gamma_\text{ZFC}\) are incomplete.
+    \end{block}
+    \begin{block}{Proof.}
+        Completeness를 가정하고 다음 program을 생각하자.
+        \begin{itemize}
+            \ii 모든 proof tree \(T\)를 열거하면서:
+            \ii \(T\)가 \(\Gamma \vdash A\) 혹은 \(\Gamma \vdash \lnot A\)의 proof인지 확인.
+        \end{itemize}
+        \(\Gamma\)가 complete함을 가정했으므로,
+        언젠가 \(\Gamma \vdash A\) 혹은 \(\Gamma \vdash \lnot A\) 의 증명을 찾음.
+        따라서, \(\Gamma\)가 decidable이 됨. 모순! \qed
+    \end{block}
+\end{frame}
+
+\begin{frame}{Gödel's First Incompleteness Theorem}
+    \begin{block}{Theorem (Gödel's First Incompleteness Theorem)}
+        Let \(\Gamma\) be any set of axioms such that
+        \begin{itemize}
+            \ii \(\Gamma\) is consistent
+            \ii \(\Gamma\) is semidecidable
+            \ii can represent all computable functions.
+        \end{itemize}
+        Then, \(\Gamma\) is incomplete.
+    \end{block}
+    \begin{block}{Proof.}
+        Completeness를 가정하고 다음 program을 생각하자.
+        \begin{itemize}
+            \ii 모든 proof tree \(T\)를 열거하면서:
+            \ii \(T\)가 \(\Gamma \vdash A\) 혹은 \(\Gamma \vdash \lnot A\)의 proof인지 확인.
+        \end{itemize}
+        \(\Gamma\)가 complete함을 가정했으므로,
+        언젠가 \(\Gamma \vdash A\) 혹은 \(\Gamma \vdash \lnot A\) 의 증명을 찾음.
+        따라서, \(\Gamma\)가 decidable이 됨. 모순! \qed
+    \end{block}
+\end{frame}
+
+\end{document}
