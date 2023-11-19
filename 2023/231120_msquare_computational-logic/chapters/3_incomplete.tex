@@ -198,6 +198,7 @@
     \begin{block}{Theorem (Undecidability of ZA/ZFC)}
         자연수를 표현하는 \(\Gamma\)는 모두 undecidable하다.
     \end{block}
+    \pause
     \begin{block}{Proof.}
         % \small
         \begin{itemize}
@@ -228,6 +229,7 @@
         }
         is computable.
     \end{block}
+    \pause
 
     \begin{block}{Theorem (Semidecidability is Global)}
         Every \(\Gamma\) is semidecidable.
@@ -249,10 +251,12 @@
         \end{itemize}
         for each \(A \in \LS\).
     \end{block}
+    \pause
 
     \begin{block}{Theorem}
         \(\Gamma_\text{PA}\) and \(\Gamma_\text{ZFC}\) are incomplete.
     \end{block}
+    \pause
     \begin{block}{Proof.}
         Completeness를 가정하고 다음 program을 생각하자.
         \begin{itemize}
@@ -276,14 +280,7 @@
         Then, \(\Gamma\) is incomplete.
     \end{block}
     \begin{block}{Proof.}
-        Completeness를 가정하고 다음 program을 생각하자.
-        \begin{itemize}
-            \ii 모든 proof tree \(T\)를 열거하면서:
-            \ii \(T\)가 \(\Gamma \vdash A\) 혹은 \(\Gamma \vdash \lnot A\)의 proof인지 확인.
-        \end{itemize}
-        \(\Gamma\)가 complete함을 가정했으므로,
-        언젠가 \(\Gamma \vdash A\) 혹은 \(\Gamma \vdash \lnot A\) 의 증명을 찾음.
-        따라서, \(\Gamma\)가 decidable이 됨. 모순! \qed
+        위와 크게 다르지 않음. \qed
     \end{block}
 \end{frame}
 
