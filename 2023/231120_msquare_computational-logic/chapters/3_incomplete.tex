@@ -149,7 +149,7 @@
 
 \begin{frame}{Representability}
     \begin{block}{Lemma}
-        The partial function \(f_\text{Halt} \colon \mfr M \times X \to \{0, 1\}\) defined by
+        The partial function \(f_\text{Halt} \colon \mfr M \times X \rightharpoonup \{0, 1\}\) defined by
         \centerline{\(f_\text{Halt}(M, x) = \begin{cases}
             1 & \text{if } M(x) \downarrow \\
             0 \text{ or undefined} & \text{if } M(x) \uparrow
@@ -220,7 +220,7 @@
 
 \begin{frame}{Semidecidability of PA/ZFC}
     \begin{block}{Definition: Semidecidability}
-        \(\Gamma \subseteq \LS\) is semidecidable if the \ul{partial} function \(f \colon \LS \to \{0,1\}\)
+        \(\Gamma \subseteq \LS\) is semidecidable if the \ul{partial} function \(f \colon \LS \rightharpoonup \{0,1\}\)
         \centerline{
             \(f(A) = \begin{cases}
                 1 & \text{if } \Gamma \vdash A \\
