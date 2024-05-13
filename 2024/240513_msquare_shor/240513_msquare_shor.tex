@@ -1,0 +1,100 @@
+\RequirePackage{scrlfile}
+\makeatletter
+\AfterPackage{beamerbasemodes}{\beamer@amssymbfalse}
+\makeatother
+
+\documentclass[handout]{beamer}
+\usetheme{Darmstadt}
+\usepackage{amsmath, amssymb, mathtools, tipa, tikz}
+\usepackage[utf8]{inputenc}
+\usefonttheme{professionalfonts} % default family is serif
+\beamertemplatenavigationsymbolsempty % remove navigation bar
+\usepackage[charter]{mathdesign}
+\usepackage{kotex}
+\setmainhangulfont{NanumMyeongjo}[BoldFont=* Bold, AutoFakeSlant]
+% \setsanshangulfont{NanumMyeongjo}[BoldFont=* Bold, AutoFakeSlant]
+\setsanshangulfont{NanumSquareRound}[BoldFont=* Bold, AutoFakeSlant]
+% \setsanshangulfont{Pretendard}[BoldFont=* Bold, AutoFakeSlant]
+% \renewcommand{\sfdefault}{\rmdefault}
+\usepackage[normalem]{ulem} % For strikethrough
+\usepackage{bussproofs} % For formal proof trees
+\usepackage{subfiles}
+
+% shortcuts
+\DeclareMathAlphabet{\altmathcal}{OMS}{cmsy}{m}{n}
+\DeclareMathAlphabet\mathbfcal{OMS}{cmsy}{b}{n}
+\newcommand{\mcal}[1]{\altmathcal{#1}}
+\newcommand{\mbb}[1]{\mathbb{#1}}
+\newcommand{\mscr}[1]{\mathscr{#1}}
+\newcommand{\mbf}[1]{\mathbf{#1}}
+\newcommand{\mrm}[1]{\mathrm{#1}}
+\newcommand{\msf}[1]{\mathsf{#1}}
+\newcommand{\mtt}[1]{\mathtt{#1}}
+\newcommand{\mfr}[1]{\mathfrak{#1}}
+\newcommand{\ttt}[1]{\texttt{#1}}
+\newcommand{\mbc}[1]{\mathbfcal{#1}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\RR}{\mathbb{N}}
+\newcommand{\OO}{\varnothing}
+
+\newcommand{\eps}{\epsilon}
+\newcommand{\veps}{\varepsilon}
+\newcommand{\fall}{\forall}
+\newcommand{\exs}{\exists}
+\newcommand{\ol}{\overline}
+\newcommand{\ul}{\underline}
+\newcommand{\cl}{\overline}
+\newcommand{\ii}{\item}
+\newcommand{\lang}{\langle}
+\newcommand{\rang}{\rangle}
+\renewcommand{\mod}{~\mrm{mod}~}
+
+\DeclareMathOperator{\ord}{ord}
+\newcommand{\comment}[1]{\hfill $\triangleright$ #1}
+\renewcommand{\:}{\text{ }}
+
+\title{Shor's Algorithm}
+\subtitle{수학문제연구회 2024S Seminar}
+\author{36기 한승우}
+\institute{KAIST 수학문제연구회}
+\date{2024년 5월 13일}
+
+\hypersetup{
+    colorlinks=false,
+    urlcolor=cyan,
+    pdftitle={Computational Logic Seminar},
+    pdfpagemode=FullScreen,
+}
+
+\setbeamerfont{frametitle}{size=\large, series=\bfseries}
+
+\begin{document}
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\section*{Introduction}
+\subfile{chapters/0_intro.tex}
+
+\section{Shor's Algorithm}
+\subfile{chapters/1_shor.tex}
+
+\section{Quantum Subroutine}
+\subfile{chapters/2_quantum.tex}
+
+\section*{\mbox{}}
+\begin{frame}{References}
+    \begin{itemize}
+        \ii Shor, P.W. (1994). "Algorithms for quantum computation: Discrete logarithms and factoring".
+        \textit{Proceedings 35th Annual Symposium on Foundations of Computer Science}. IEEE Comput. Soc. Press. pp. 124–134.
+        \ii Burton, David M. \textit{Elementary Number Theory}. 2nd ed, Wm. C. Brown, 1989.
+    \end{itemize}
+\end{frame}
+\begin{frame}{Q\&A}
+    \begin{center}
+        \fbox{질문 받습니다.}
+    \end{center}
+\end{frame}
+
+\end{document}

@@ -1,0 +1,198 @@
+\documentclass[../240513_msquare_shor.tex]{subfiles}
+
+\begin{document}
+
+\subsection{Overview}
+
+\begin{frame}{Factorization}
+    \begin{block}{Problem ``\textsc{Factoring}''}
+        \centerline{Given \(n \in \mbb{N}_{>1}\), find a non-trivial divisor \(d\) of \(n\) if \(n\) is composite.}
+    \end{block}
+    \pause
+    \begin{alertblock}{Unsolved Question}
+        이 문제가 고전적인 컴퓨터에서 poly-time안에 해결 가능할까?
+        즉, 이 문제는 P에 속할까?
+    \end{alertblock}
+    \begin{exampleblock}{Current Best: General Number Field Sieve}
+    \[\mrm{exp}\left( \left(\left(\frac{64}{9}\right)^{1/3} + o(1)\right) (\log n)^{1/3} (\log \log n)^{2/3} \right)\]
+    \end{exampleblock}
+    \pause
+    \begin{exampleblock}{Shor's Algorithm}
+        Randomized quantum computing으로 poly-time안에 해결 가능.
+        즉, ``Factoring''은 BQP에 속함.
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Shor's Algorithm: Overview}
+    \centerline{\fbox{Given \(n \in \mbb{N}_{>1}\), find a non-trivial divisor \(d\) of \(n\) if \(n\) is composite.}}
+    \begin{block}{Procedure of Shor's Algorithm}
+        Input: $n \in \mbb{N}_{>1}$\small
+        \begin{enumerate}
+            \item If $n$ is even or is a prime power, then done.
+            \item Pick a random integer $1 < x < n$ and loop.
+            \begin{enumerate}
+                \setlength\itemsep{0.4em}
+                \item If $\gcd(x, n) > 1$, then done.
+                \item Calculate $r = \ord_n x$. \comment{where we need quantum computing}
+                \item If $r$ is even and $x^{r/2} \not\equiv_n -1$, break the loop.
+            \end{enumerate}
+            \item $\gcd(x^{r/2}+1, n)$ and $\gcd(x^{r/2}-1, n)$ are non-trivial divisors.
+        \end{enumerate}
+    \end{block}
+    \begin{exampleblock}{}
+        Quantum computing은 order를 계산하는 데에만 쓰임!
+    \end{exampleblock}
+\end{frame}
+
+\subsection{Correctness}
+\begin{frame}{Correctness: Part 1}
+    \begin{block}{Theorem}
+        If \(b \in \ZZ\) satisfies \(b^2 \equiv 1 \pmod{n}\) and \(b \not\equiv_n \pm 1\),
+        then \[ 1 < \gcd(b - 1, n), \gcd(b+1, n) < n\text{.} \]
+    \end{block}
+    \pause
+    \begin{exampleblock}{Proof}
+        Set \(d = \gcd(b - 1, n)\) and use B\'ezout's identity. \qed
+    \end{exampleblock}
+    \pause
+    \begin{block}{Corollary}
+        If \(r = \ord_n x\) is even and \(x^{r/2} \not\equiv -1 \pmod{n}\),
+        then \[ 1 < \gcd(x^{r/2} - 1, n), \gcd(x^{r/2}+1, n) < n\text{.} \]
+    \end{block}
+    \begin{exampleblock}{}
+        위 보조정리에 의해 Shor's algorithm (3)의 정확성은 보여졌다!
+        % 이제 어떻게 빠르게 \(r = \ord_n x\)를 계산할 수 있을까?
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Correctness: Part 2}
+    \begin{exampleblock}{}
+        이제 (2) Loop가 무한 루프가 아니라는 걸 보이자!
+    \end{exampleblock}
+    \begin{block}{Definition}
+        소수 \(p\)와 자연수 \(n\)에 대해
+        \[
+            u(p, n) = \max \{\,k \in \ZZ_{\ge 0} \mid p^k~\text{divides}~n\,\}
+        \]
+        라고 정의하자.
+    \end{block}
+    \begin{exampleblock}{Example}
+        \begin{itemize}
+            \ii \(u(2, 24) = 3\), \(u(3, 24) = 1\).
+            \ii \(u(2, 30) = u(3, 30) = u(5, 30) = 1\), \(u(7, 30) = 0\).
+        \end{itemize}
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Correctness: Part 2}
+    \begin{block}{Lemma}
+        소수 \(p\)와 자연수 \(n\), 음이 아닌 정수 \(\alpha\)에 대해,
+        \[ \left| \left\{ k \in [n] \:\big|\: u\big( p, \gcd(k, n) \big) = \alpha \right\} \right| = \begin{cases}
+            \displaystyle \frac{p-1}{p^{\alpha+1}}n \vspace*{.7em}, & 0 \leq \alpha < u(p, n) \\
+            \displaystyle \frac{1}{p^\alpha}n, & \alpha = u(p, n) \\
+            0 & \alpha > u(p, n)
+        \end{cases} \]
+        이다.
+    \end{block}
+    \pause
+    \begin{block}{Lemma}
+        n이 짝수이면
+        $\displaystyle \left| \left\{ k \in [n] \:\bigg|\: u\left( 2, \frac{n}{\gcd(k, n)} \right) = \alpha \right\} \right| \leq \frac{n}{2}$.
+    \end{block}
+\end{frame}
+
+\begin{frame}{Correctness: Part 2}
+    \begin{block}{Theorem}
+        \(n\)이 odd prime power이면 모든 자연수 \(\alpha\)에 대해
+        \[
+            \Pr_{x \in \ZZ_n^\ast} \big[ u(2, \ord_n x) = \alpha \big] \le \frac{1}{2}
+        \]
+        이다. (\(\ZZ_n^\ast = \{\,m \in [n] \mid \gcd(m,n)=1\,\}\))
+    \end{block}
+    \pause
+    \begin{exampleblock}{Proof}
+        \(n\)이 odd prime power이므로 \(n\)의
+        primitive root \(g\)가 존재한다.
+        그러면, 각각의 \(x \in \ZZ_n^\ast\)에 대해 \(x \equiv g^k \pmod{n}\)인
+        \(k\)가 존재하고 따라서
+        \[
+            \ord_n x = \frac{\ord_n g}{\gcd(k, \ord_n g)} = \frac{\phi(n)}{\gcd(k, \phi(n))}
+        \]
+        이다. 이제 전 슬라이드의 lemma를 적용한다. \qed
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Correctness: Part 2}
+    \begin{block}{Theorem}
+        \(n = p_1^{a_1} \cdots p_k^{a_k}\)를 \(n\)의 소인수분해라고 하자.
+        \(\gcd(x, n) = 1\)인 \(x\)를 하나 고르자.
+        \(r = \ord_n x\), \(r_i = \ord_{p_i^{a_i}} x\)라고 하자.
+        \(r = \ord_n\)가 짝수라면,
+        \[
+            x^{r/2} \equiv -1 \pmod{n}
+            \:\iff\: u(2, r_1) = \cdots = u(2, r_k) > 0\text{이다.}
+        \]
+    \end{block}
+    \pause
+    \begin{exampleblock}{Proof}
+        \(r = \mrm{lcm}(r_1, \cdots, r_k)\)이다.
+        \(r\)을 \(r_i\)로 나눈 몫을 \(s_i\)라고 하자.
+        \[
+            x^{r/2} \equiv -1 \pmod{n} \:\iff\:
+            \fall i \in [n],\: x^{r_i s_i / 2} = x^{r/2} \equiv -1 \pmod{p_i^{a_i}}
+        \]
+        만약 어느 \(s_i\)가 짝수라면 \(x^{r_i s_i / 2} \equiv 1 \pmod{p_i^{a_i}}\)가 되므로,
+        모든 \(s_i\)는 홀수이고, 따라서 모든 \(r_i\)는 짝수이다.
+        \hfill Continued...
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Correctness: Part 2}
+    \begin{exampleblock}{}
+        모순을 보이기 위해 \(u(2, r_1) > u(2, r_2)\)라고 가정하자.
+        \(r_1 = 2^{\alpha_1} t_1\), \(r_2 = 2^{\alpha_2} t_2\)로 쓰자. (\(t_1, t_2\)는 홀수.)
+        그러면 \(\alpha_1 > \alpha_2\)이므로
+        \[
+            2^{\alpha_1} \mid r = r_2 s_2 = 2^{\alpha_2} t_2 s_2
+        \]
+        이고, \(t_2\)와 \(s_2\) 모두 홀수이므로 이는 불가능하다.
+
+        \vspace*{1em}
+        반대로, \(u(2, r_1) = \cdots = u(2, r_k) > 0\)을 가정하면
+        모든 \(i\)에 대해 \(2 \nmid s_i\)이고,
+        따라서 \(x^{r/2} = (x^{r_i / 2})^{s_i} \equiv (-1)^{s_i} = -1 \pmod{p_i^{s_i}}\)이다.
+        \qed
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Correctness: Part 2}
+    \begin{block}{Lemma}
+        \[
+            \Pr_{x \in \ZZ_n^\ast} [ \ord_n x~\text{is even} ] \ge \frac{1}{2}
+        \]
+    \end{block}
+    \begin{exampleblock}{Proof}
+        일대일 함수
+        \begin{align*}
+            f \colon \ZZ_n^\ast &\longrightarrow \ZZ_n^\ast \\
+            x &\longmapsto -x
+        \end{align*}
+        는 order가 odd인 원소를 order가 even인 원소로 보낸다. \qed
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Correctness: Part 2}
+    \begin{block}{Theorem}
+        \(n\)이 합성수이면,
+        \[
+            \Pr_{x \in \ZZ_n^\ast} \left[ \ord_n x~\text{is even and}~
+            x^{(\ord_n x) / 2} \equiv -1 \pmod{n}\right] \ge \frac{1}{4}.
+        \]
+    \end{block}
+    \begin{exampleblock}{}
+        이제 Shor's algorithm (2)의 loop가
+        평균적으로 \(O(1)\) 안에 끝난다는 사실을 알았음!
+    \end{exampleblock}
+\end{frame}
+
+\end{document}
