@@ -61,7 +61,6 @@
     \end{block}
     \begin{exampleblock}{}
         위 보조정리에 의해 Shor's algorithm (3)의 정확성은 보여졌다!
-        % 이제 어떻게 빠르게 \(r = \ord_n x\)를 계산할 수 있을까?
     \end{exampleblock}
 \end{frame}
 
@@ -186,7 +185,7 @@
         \(n\)이 합성수이면,
         \[
             \Pr_{x \in \ZZ_n^\ast} \left[ \ord_n x~\text{is even and}~
-            x^{(\ord_n x) / 2} \equiv -1 \pmod{n}\right] \ge \frac{1}{4}.
+            x^{(\ord_n x) / 2} \not\equiv -1 \pmod{n}\right] \ge \frac{1}{4}.
         \]
     \end{block}
     \begin{exampleblock}{}
