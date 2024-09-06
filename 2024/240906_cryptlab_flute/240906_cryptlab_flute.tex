@@ -1,0 +1,38 @@
+%! TEX TS-program = lualatex
+\RequirePackage{scrlfile}
+\makeatletter
+\AfterPackage{beamerbasemodes}{\beamer@amssymbfalse}
+\makeatother
+
+\documentclass[handout]{beamer}
+% \documentclass{beamer}
+\usefonttheme{professionalfonts}
+\usepackage{preamble}
+
+
+\title{Secure Computing of Table with FLUTE}
+% \subtitle{수학문제연구회 2024S Seminar}
+\author{카이스트 전산학부 한승우}
+\date{2024년 9월 6일}
+
+\begin{document}
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\section{Preliminaries}
+\subfile{chapters/1-preliminaries.tex}
+
+\section{Building Blocks}
+\subfile{chapters/2-building-blocks.tex}
+
+\section{Calculating LUT}
+\subfile{chapters/3-calculating-lut.tex}
+
+\section{Benchmarks}
+\subfile{chapters/4-benchmarks.tex}
+
+\section*{\mbox{}}
+\subfile{chapters/0-reference.tex}
+
+\end{document}

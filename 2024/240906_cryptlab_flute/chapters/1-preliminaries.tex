@@ -1,0 +1,190 @@
+\documentclass[../240906_cryptlab_flute.tex]{subfiles}
+
+\begin{document}
+
+\subsection{Lookup Table}
+\begin{frame}{Lookup Table}
+    \begin{block}{LUT (Lookup Table)}
+        \(\delta\)-to-\(\sigma\) lookup table \(\Table\) is a function
+        \(\Table \colon \{0,1\}^\delta \to \{0,1\}^\sigma\).
+    \end{block}
+    \def\onlyred{}
+    \begin{columns}
+        \begin{column}{.35\textwidth}
+            \centering
+            \begin{table}[H]
+                \begin{tabular}{ccc|c}
+                    \(x_1\)       & \(x_2\)       & \(x_3\)       & \(y\)         \\ \hline
+                    \onlyred\(0\) & \onlyred\(0\) & \onlyred\(0\) & \onlyred\(1\) \\
+                    \(0\)         & \(0\)         & \(1\)         & \(0\)         \\
+                    \(0\)         & \(1\)         & \(0\)         & \(0\)         \\
+                    \onlyred\(0\) & \onlyred\(1\) & \onlyred\(1\) & \onlyred\(1\) \\
+                    \(1\)         & \(0\)         & \(0\)         & \(0\)         \\
+                    \onlyred\(1\) & \onlyred\(0\) & \onlyred\(1\) & \onlyred\(1\) \\
+                    \(1\)         & \(1\)         & \(0\)         & \(0\)         \\
+                    \(1\)         & \(1\)         & \(1\)         & \(0\)
+                \end{tabular}
+            \end{table}
+            Example \(3\)-to-\(1\) LUT \(\Table\)
+        \end{column}
+        \pause
+        \begin{column}{.65\textwidth}
+            \begin{description}[Question]
+                \item[Goal]
+                Given secret shares of \(x_1\), \(x_2\), and \(x_3\),
+                we want to compute the secret shares of \(\Table(x_1, x_2, x_3)\).
+                \pause
+                \item[Question]
+                What secret sharing scheme should we use?
+                \item[Question]
+                How can we optimize the online and setup cost?
+                \pause
+                (Up to \alert{\(2\sigma\) bits per LUT caculation} in the online phase!)
+            \end{description}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% \subsection{Oblivious Transfer}
+% \begin{frame}{Oblivious Transfer}
+%     \begin{block}{Oblivious Transfer}
+%         Let \(S\) be a \emph{sender} and \(R\) be a \emph{receiver}.
+%         The \(\binom{2}{1}\text{-}\OT_1\) functionality does the following:
+%         \centerline{%
+%             \begin{tabular}{c|cc}
+%                        & \(S\)                  & \(R\)             \\ \hline
+%                 Input  & \(a_0, a_1 \in \ZZ_2\) & \(r \in \{0,1\}\) \\
+%                 Learns & Nothing                & \(a_r\)
+%             \end{tabular}
+%         }
+%     \end{block}
+%     \pause
+%     \begin{block}{Random Oblivious Transfer}
+%         The \(\binom{2}{1}\text{-}\rOT_1\) functionality does the following:
+%         \centerline{%
+%         \begin{tabular}{c|cc}
+%                    & \(S\)                  & \(R\)             \\ \hline
+%             Input  & Nothing                & \(r \in \{0,1\}\) \\
+%             Learns & \(a_0, a_1 \in \ZZ_2\) & \(a_r\)
+%         \end{tabular}}
+%         where \(a_0\) and \(a_1\) are randomly chosen.
+%     \end{block}
+% \end{frame}
+
+\subsection{Secret Sharing Scheme}
+\begin{frame}{\([\cdot]\) Secret Sharing}
+    \centerline{\(P_0\), \(P_1\): parties}
+    \begin{block}{\([\cdot]\) Secret Sharing}
+        A bit \(v \in \ZZ_2\) is said to be \([\cdot]\)-\emph{shared}
+        between \(P_0\) and \(P_1\) if \(P_i\) holds \([v]_i\) such that
+        \[v = [v]_0 \oplus [v]_1.\]
+    \end{block}
+
+\end{frame}
+
+\begin{frame}{\([\cdot]\) Secret Sharing}
+    \begin{exampleblock}{}
+        \small
+        The \([\cdot]\)-sharing is \emph{linear} in the sense that:
+        \begin{enumerate}
+            \ii
+            For \([\cdot]\)-shared \(u, v \in \ZZ_2\),
+            \([\cdot]\)-sharing of \(u \oplus v\) can be locally computed by:
+            \[
+                [u \oplus v]_i = [u]_i \oplus [v]_i~\text{for each}~i \in \{0,1\}.
+            \]
+            \ii
+            For \([\cdot]\)-shared \(v \in \ZZ_2\) and public \(b \in \ZZ_2\),
+            \([\cdot]\)-sharing of \(bv\) can be locally computed by:
+            \[
+                [bv]_i = b[v]_i~\text{for each}~i \in \{0,1\}.
+            \]
+            \ii
+            For \([\cdot]\)-shared \(v \in \ZZ_2\) and public \(b \in \ZZ_2\),
+            \([\cdot]\)-sharing of \(v \oplus b\) can be locally computed by:
+            \[
+                [v \oplus b]_i = [v]_i \oplus ib~\text{for each}~i \in \{0,1\}.
+            \]
+            In particular, \([\cdot]\)-sharing of \(\ol{v} = v \oplus 1\) can be locally computed.
+        \end{enumerate}
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Multiplication of \([\cdot]\)-shared Values}
+    \begin{block}{Beaver's Multiplication Triple}
+        Suppose \(P_0\) and \(P_1\) have \([\cdot]\)-shares of \(u, v \in \ZZ_2\).
+        Suppose additionally that they have \([\cdot]\)-shares of \(a, b, c\) where \(c = ab\).
+        \begin{enumerate}
+            \ii
+            \(P_i\) computes \([u \oplus a]_i\) and \([v \oplus b]_i\),
+            and sends them to \(P_{1-i}\).
+            \ii
+            \(P_0\) and \(P_1\) now know \(d \coloneqq u \oplus a\) and \(e \coloneqq v \oplus b\).
+            \ii
+            \(P_i\) computes \([z]_i = i \cdot de \oplus d[b]_i \oplus e[a]_i \oplus [c]_i\).
+            \ii
+            Then, \([z]_0 \oplus [z]_1 = z = uv\).
+        \end{enumerate}
+        With the prepared \emph{multiplication triple},
+        a \([\cdot]\)-share of \(uv\) is calculated with the cost of \ul{four bits in a single round}.
+    \end{block}
+
+    \begin{exampleblock}{}
+        \[\begin{aligned}[t]
+            z &= uv = (d \oplus a)(e \oplus b) \\
+              &= {\underbrace{de}_\text{public}} \oplus db \oplus ea \oplus \underbrace{ab}_{=c}
+        \end{aligned}\]
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{\(\lang \cdot \rang\) Secret Sharing}
+    \begin{block}{\(\lang\cdot\rang\) Secret Sharing}
+        A bit \(v \in \ZZ_2\) is said to be \(\lang\cdot\rang\)\emph{-shared} if:
+        \begin{enumerate}
+            \ii
+            A value \(\lambda_v \in \ZZ_2\) is \([\cdot]\)-shared between \(P_0\) and \(P_1\).
+            \begin{itemize}
+                \ii \([\lambda_v]_i\)'s are locally set arbitrarily.
+            \end{itemize}
+            \ii
+            A value \(\msf{m}_v \in \ZZ_2\) is known to both parties.
+            \ii
+            \(v = \msf{m}_v \oplus \lambda_v\)
+        \end{enumerate}
+
+        The \(\lang \cdot \rang\)-share of \(v\) is denoted
+        \(\lang v \rang_i = (\msf{m}_v, [\lambda_v]_i)\).
+    \end{block}
+\end{frame}
+
+\begin{frame}{{\(\lang \cdot \rang\) Secret Sharing}}
+    \begin{exampleblock}{}
+        \small
+        The \(\lang\cdot\rang\)-sharing is \emph{linear} in the sense that:
+        \begin{enumerate}
+            \ii
+            For \(\lang\cdot\rang\)-shared \(u, v \in \ZZ_2\),
+            \(\lang\cdot\rang\)-sharing of \(u \oplus v\) can be locally computed by:
+            \[
+                \msf{m}_{u \oplus v} = \msf{m}_u \oplus \msf{m}_v~\text{and}~
+                [\lambda_{u \oplus v}]_i = [\lambda_u]_i \oplus [\lambda_v]_i
+            \]
+            \ii
+            For \(\lang\cdot\rang\)-shared \(v \in \ZZ_2\) and public \(b \in \ZZ_2\),
+            \(\lang\cdot\rang\)-sharing of \(bv\) can be locally computed by:
+            \[
+                \msf{m}_{bv} = b\msf{m}_v~\text{and}~
+                [\lambda_{bv}]_i = b[\lambda_v]_i.
+            \]
+            \ii
+            For \(\lang\cdot\rang\)-shared \(v \in \ZZ_2\) and public \(b \in \ZZ_2\),
+            \(\lang\cdot\rang\)-sharing of \(v \oplus b\) can be locally computed by:
+            \[
+                \msf{m}_{v \oplus b} = \msf{m}_v \oplus b.
+            \]
+            In particular, \(\lang\cdot\rang\)-sharing of \(\ol{v} = v \oplus 1\) can be locally computed.
+        \end{enumerate}
+    \end{exampleblock}
+\end{frame}
+
+\end{document}

@@ -1,0 +1,238 @@
+\documentclass[../240906_cryptlab_flute.tex]{subfiles}
+
+\begin{document}
+
+\subsection{Boolean Representation of Lookup Table}
+
+\begin{frame}{LUT Revisited}
+    \def\onlyred{\only<2->{\color{red}}}
+    \begin{columns}
+        \begin{column}{0.4\textwidth}
+            \centering
+            \begin{table}[H]
+                \centering
+                \begin{tabular}{ccc|c}
+                    \(x_1\)       & \(x_2\)       & \(x_3\)       & \(y\)         \\ \hline
+                    \onlyred\(0\) & \onlyred\(0\) & \onlyred\(0\) & \onlyred\(1\) \\
+                    \(0\)         & \(0\)         & \(1\)         & \(0\)         \\
+                    \(0\)         & \(1\)         & \(0\)         & \(0\)         \\
+                    \onlyred\(0\) & \onlyred\(1\) & \onlyred\(1\) & \onlyred\(1\) \\
+                    \(1\)         & \(0\)         & \(0\)         & \(0\)         \\
+                    \onlyred\(1\) & \onlyred\(0\) & \onlyred\(1\) & \onlyred\(1\) \\
+                    \(1\)         & \(1\)         & \(0\)         & \(0\)         \\
+                    \(1\)         & \(1\)         & \(1\)         & \(0\)
+                \end{tabular}
+            \end{table}
+            Example \(3\)-to-\(1\) LUT \(\Table\)
+        \end{column}
+        \pause
+        \begin{column}{0.4\textwidth}
+            \small
+            \centering
+            \only<2>{
+                \begin{align*}
+                        & (\ol{x_1} \land \ol{x_2} \land \ol{x_3}) \\
+                    \lor & (\ol{x_1} \land x_2 \land x_3) \\
+                    \lor & (x_1 \land \ol{x_2} \land x_3)
+                \end{align*}
+                DNF representation of \(\Table\)
+            }
+            \pause
+            \only<3->{%
+                \begin{align*}
+                        & (\ol{x_1} \land \ol{x_2} \land \ol{x_3}) \\
+                    \oplus & (\ol{x_1} \land x_2 \land x_3) \\
+                    \oplus & (x_1 \land \ol{x_2} \land x_3)
+                \end{align*}
+            }
+            \only<3>{An equivalent circuit.}
+            \pause
+            \begin{equation*}
+                y
+                = \begin{pmatrix} \ol{x_1} \\ \ol{x_1} \\ x_1 \end{pmatrix}
+                   \odot \begin{pmatrix} \ol{x_2} \\ x_2 \\ \ol{x_2} \end{pmatrix}
+                   \odot \begin{pmatrix} \ol{x_3} \\ x_3 \\ x_3 \end{pmatrix}
+            \end{equation*}
+            ``Multi-Fan-In Inner Product'' representation
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\subsection{Building Blocks: Multiplication}
+\begin{frame}{Multiplication of \(\lang\cdot\rang\)-shared Values}
+    \only<2->{\centerline{%
+        \(\begin{aligned}[t]
+            z &= uv = (\msf{m}_u \oplus \lambda_u)(\msf{m}_v \oplus \lambda_v) \\
+            &=
+            {\underbrace{\msf{m}_u \msf{m}_v}_\text{public}} \oplus \msf{m}_u \lambda_v
+            \oplus \msf{m}_v \lambda_u \oplus {\underbrace{\lambda_u \lambda_v}_{=\lambda_{uv}}}
+        \end{aligned}\)
+    }}
+
+    \begin{block}{Multiplication of \(\lang\cdot\rang\)-shared Values}
+        \begin{description}[Output]
+            \ii[Input]
+            \(\lang\cdot\rang\)-shares of \(u, v \in \ZZ_2\)
+            and \([\cdot]\)-shares of \(\lambda_{uv} \coloneqq \lambda_u \lambda_v\).
+            \ii[Output]
+            \(\lang\cdot\rang\)-shares of \(uv\).
+        \end{description}
+        \pause
+        \begin{enumerate}
+            \ii
+            \(P_i\) computes \([z]_i = i \cdot \msf{m}_u \msf{m}_v
+            \oplus \msf{m}_u[\lambda_v]_i \oplus \msf{m}_v [\lambda_u]_i \oplus [\lambda_{uv}]_i\).
+            \pause
+            \ii
+            \(P_i\) randomly chooses \([\lambda_z]_i \in \ZZ_2\).
+            \ii
+            \(P_i\) computes \([\msf{m}_z]_i = [z]_i \oplus [\lambda_z]_i\)
+            and sends it to \(P_{i-1}\).
+            \ii
+            Then, \(P_0\) and \(P_1\) have \(\lang\cdot\rang\)-shares of \(z = uv\).
+        \end{enumerate}
+        \pause
+        With the prepared multiplication triple,
+        a \(\lang\cdot\rang\)-share of \(uv\) is calculated with the cost of \ul{two bits in a single round}.
+    \end{block}
+\end{frame}
+
+\subsection{Building Blocks: Inner Product}
+\begin{frame}{Inner Product of \(\lang\cdot\rang\)-shared Values}
+    \begin{block}{Inner Product of \(\lang\cdot\rang\)-shared Values}
+        \begin{description}[Output]
+            \ii[Input]
+            \(\lang\cdot\rang\)-shares of \(u^1, \cdots, u^N, v^1 \cdots, v^N \in \ZZ_2\)
+            and \([\cdot]\)-shares of \(\lambda_{u^1} \lambda_{v^1},
+            \cdots, \lambda_{u^N} \lambda_{v^N}\).
+            \ii[Output]
+            \(\lang\cdot\rang\)-shares of \(z = \bigoplus_{k=1}^N u^k v^k\).
+        \end{description}
+        \pause
+        \begin{enumerate}
+            \ii \(P_i\) computes \([u^k v^k]_i\) for \(k \in [N]\) as before.
+            \pause
+            \ii \(P_i\) randomly chooses \([\lambda_z]_i \in \ZZ_2\).
+            \ii \(P_i\) computes
+            \([\msf{m}_z]_i = [\lambda_z]_i \oplus \bigoplus_{k=1}^N [u^k v^k]_i\)
+            and sends it to \(P_{1-i}\).
+            \ii
+            Then, \(P_0\) and \(P_1\) have \(\lang\cdot\rang\)-shares of \(z = \bigoplus_{k=1}^N u^k v^k\).
+        \end{enumerate}
+        \pause
+        With the prepared \(N\) multiplication triples,
+        a \(\lang\cdot\rang\)-share of \(\bigoplus_{k=1}^N u^k v^k\)
+        is calculated with the cost of \ul{two bits in a single round}.
+    \end{block}
+\end{frame}
+
+\subsection{Building Blocks: Multi-Fan-In Product}
+\begin{frame}{Multi-Fan-In Product of \(\lang\cdot\rang\)-shared Values}
+    \begin{block}{Multi-Fan-In Product of \(\lang\cdot\rang\)-shared Values}
+        \begin{description}[Output]
+            \ii[Input]
+            \(\lang\cdot\rang\)-shares of \(u_1, \cdots, u_M \in \ZZ_2\) and \fbox{\(\mrm{???}\)}.
+            \ii[Output]
+            \(\lang\cdot\rang\)-shares of \(\bigwedge_{j=1}^M u_j\).
+        \end{description}
+    \end{block}
+    \pause
+    \begin{exampleblock}{}
+        Let \(\mcal{Q}\) be a set of
+        \(\lang\cdot\rang\)-shared values (wires).
+        We use the following notation:
+        \[\textstyle
+            \msf{m}_{\mcal{Q}} \triangleq \bigwedge_{u \in \mcal{Q}} \msf{m}_u
+            \quad\text{and}\quad
+            \lambda_{\mcal{Q}} \triangleq \bigwedge_{u \in \mcal{Q}} \lambda_u.
+        \]
+    \end{exampleblock}
+    \pause
+    \begin{exampleblock}{Observation}
+        \[
+            \bigwedge_{j=1}^M u_j = \bigwedge_{j=1}^M (\msf{m}_{u_j} \oplus \lambda_{u_j})
+            = \bigoplus_{\mcal{Q} \subseteq \mcal{I}}
+                (\msf{m}_{\mcal{Q}} \cdot \lambda_{\mcal{I} \setminus \mcal{Q}})
+        \]
+        where \(\mcal{I} \coloneqq \{\,u_1,u_2,\cdots,u_M\,\}\).
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Multi-Fan-In Product of \(\lang\cdot\rang\)-shared Values}
+    % \centerline{\(\displaystyle
+    %     z = \bigoplus_{\mcal{Q} \subseteq \mcal{I}}
+    %             (\msf{m}_{\mcal{Q}} \cdot \lambda_{\mcal{I} \setminus \mcal{Q}})
+    % \)}
+    \begin{block}{}
+        \begin{description}[Output]
+            \ii[Input]
+            \(\lang\cdot\rang\)-shares of \(u_1, \cdots, u_M \in \ZZ_2\) and \([\cdot]\)-shares of
+            \(\lambda_{\mcal{Q}}\) for each \(\mcal{Q} \subseteq \mcal{I}\)
+            with \(|\mcal{Q}| > 1\) where \(\mcal{I} = \{\,u_1, \cdots, u_M\,\}\).
+            \ii[Output]
+            \(\lang\cdot\rang\)-shares of \(\bigwedge_{j=1}^M u_j\).
+        \end{description}
+        \pause
+        \begin{enumerate}
+            \ii
+            \(P_i\) computes
+            \centerline{\(
+                [z]_i = i \cdot \msf{m}_{\mcal{I}}
+                \oplus \bigoplus_{\mcal{Q} \subsetneq \mcal{I}} (\msf{m}_{\mcal{Q}}
+                \cdot [\lambda_{\mcal{I} \setminus \mcal{Q}}]_i).
+            \)}
+            \pause
+            \ii
+            \(P_i\) randomly chooses \([\lambda_z]_i \in \ZZ_2\).
+            \ii
+            \(P_i\) computes \([\msf{m}_z]_i = [z]_i \oplus [\lambda_z]_i\)
+            and sends it to \(P_{1-i}\).
+            \ii
+            Then, \(P_0\) and \(P_1\) have \(\lang\cdot\rang\)-shares of \(\bigwedge_{j=1}^M u_j\).
+        \end{enumerate}
+        \pause
+        With the prepared \(2^M - M - 1\) multiplication triples,
+        a \(\lang\cdot\rang\)-share of \(\bigwedge_{j=1}^M u_j\)
+        is calculated with the cost of \ul{two bits in a single round}.
+    \end{block}
+\end{frame}
+
+\subsection{Building Blocks: Multi-Fan-In Inner Product}
+\begin{frame}{Multi-Fan-In Inner Product of \(\lang\cdot\rang\)-shared Values}
+    \begin{block}{}
+        \begin{description}[Output]
+            \ii[Input]
+            \(\lang\cdot\rang\)-shares of \(\vec{u}^1, \cdots, \vec{u}^M \in (\ZZ_2)^N\) and
+            \([\cdot]\)-shares of \(\lambda_{\mcal{Q}}\) for each \(\mcal{Q} \subseteq \mcal{I}_k\)
+            with \(|\mcal{Q}| > 1\) where \(\mcal{I}_k = \{\,\vec{u}^1_k,\cdots,\vec{u}^M_k\,\}\)
+            for \(k \in [N]\).
+            \ii[Output]
+            \(\lang\cdot\rang\)-shares of
+            \(\vec{u}^1 \odot \cdots \odot \vec{u}^N = \bigoplus_{k=1}^N \bigwedge_{j=1}^M \vec{u}^j_k\).
+        \end{description}
+        \pause
+        \begin{enumerate}
+            \ii
+            \(P_i\) computes
+            \centerline{\(\displaystyle
+                [z]_i = i \cdot \bigoplus_{k=1}^N \msf{m}_{\mcal{I}_k}
+                \oplus \bigoplus_{k=1}^N \bigoplus_{\mcal{Q} \subsetneq \mcal{I}_k} (\msf{m}_{\mcal{Q}}
+                \cdot [\lambda_{\mcal{I} \setminus \mcal{Q}}]_i).
+            \)}
+            \pause
+            \ii
+            \(P_i\) randomly chooses \([\lambda_z]_i \in \ZZ_2\).
+            \ii
+            \(P_i\) computes \([\msf{m}_z]_i = [z]_i \oplus [\lambda_z]_i\)
+            and sends it to \(P_{1-i}\).
+            \ii
+            Then, \(P_0\) and \(P_1\) have \(\lang\cdot\rang\)-shares of \(\vec{u}^1 \odot \cdots \odot \vec{u}^N\).
+        \end{enumerate}
+        \pause
+        With the prepared \(N(2^M - M - 1)\) multiplication triples,
+        a \(\lang\cdot\rang\)-share of \(\bigodot_{j=1}^N \vec{u}^j\)
+        is calculated with the cost of \ul{two bits in a single round}.
+    \end{block}
+\end{frame}
+
+\end{document}
