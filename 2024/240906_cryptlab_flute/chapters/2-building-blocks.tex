@@ -136,10 +136,10 @@
     \begin{block}{Multi-Fan-In Product of \(\lang\cdot\rang\)-shared Values}
         \begin{description}[Output]
             \ii[Input]
-            \(\lang\cdot\rang\)-shares of \(u_1, \cdots, u_M \in \ZZ_2\), \fbox{\(\mrm{???}\)},
+            \(\lang\cdot\rang\)-shares of \(u^1, \cdots, u^M \in \ZZ_2\), \fbox{\(\mrm{???}\)},
             and \([\cdot]\)-shares of \(\lambda_z\).
             \ii[Output]
-            \(\lang\cdot\rang\)-shares of \(z \coloneqq \bigwedge_{j=1}^M u_j\).
+            \(\lang\cdot\rang\)-shares of \(z \coloneqq \bigwedge_{j=1}^M u^j\).
         \end{description}
     \end{block}
     \pause
@@ -156,11 +156,11 @@
     \pause
     \begin{exampleblock}{Observation}
         \[
-            \bigwedge_{j=1}^M u_j = \bigwedge_{j=1}^M (\msf{m}_{u_j} \oplus \lambda_{u_j})
+            \bigwedge_{j=1}^M u^j = \bigwedge_{j=1}^M (\msf{m}_{u^j} \oplus \lambda_{u^j})
             = \bigoplus_{\mcal{Q} \subseteq \mcal{I}}
                 (\msf{m}_{\mcal{Q}} \cdot \lambda_{\mcal{I} \setminus \mcal{Q}})
         \]
-        where \(\mcal{I} \coloneqq \{\,u_1,u_2,\cdots,u_M\,\}\).
+        where \(\mcal{I} \coloneqq \{\,u^1,u^2,\cdots,u^M\,\}\).
     \end{exampleblock}
 \end{frame}
 
@@ -169,15 +169,15 @@
     %     z = \bigoplus_{\mcal{Q} \subseteq \mcal{I}}
     %             (\msf{m}_{\mcal{Q}} \cdot \lambda_{\mcal{I} \setminus \mcal{Q}})
     % \)}
-    \begin{block}{}
+    \begin{block}{Multi-Fan-In Product of \(\lang\cdot\rang\)-shared Values}
         \begin{description}[Output]
             \ii[Input]
-            \(\lang\cdot\rang\)-shares of \(u_1, \cdots, u_M \in \ZZ_2\), \([\cdot]\)-shares of
+            \(\lang\cdot\rang\)-shares of \(u^1, \cdots, u^M \in \ZZ_2\), \([\cdot]\)-shares of
             \(\lambda_{\mcal{Q}}\) for each \(\mcal{Q} \subseteq \mcal{I}\)
-            with \(|\mcal{Q}| > 1\) where \(\mcal{I} = \{\,u_1, \cdots, u_M\,\}\),
+            with \(|\mcal{Q}| > 1\) where \(\mcal{I} = \{\,u^1, \cdots, u^M\,\}\),
             and \([\cdot]\)-shares of \(\lambda_z\).
             \ii[Output]
-            \(\lang\cdot\rang\)-shares of \(\bigwedge_{j=1}^M u_j\).
+            \(\lang\cdot\rang\)-shares of \(\bigwedge_{j=1}^M u^j\).
         \end{description}
         \pause
         \begin{enumerate}
@@ -193,27 +193,28 @@
             \(P_i\) computes \([\msf{m}_z]_i = [z]_i \oplus [\lambda_z]_i\)
             and sends it to \(P_{1-i}\).
             \ii
-            Then, \(P_0\) and \(P_1\) have \(\lang\cdot\rang\)-shares of \(\bigwedge_{j=1}^M u_j\).
+            Then, \(P_0\) and \(P_1\) have \(\lang\cdot\rang\)-shares of \(\bigwedge_{j=1}^M u^j\).
         \end{enumerate}
         \pause
         With the prepared \(2^M - M - 1\) multiplication triples,
-        a \(\lang\cdot\rang\)-share of \(\bigwedge_{j=1}^M u_j\)
+        a \(\lang\cdot\rang\)-share of \(\bigwedge_{j=1}^M u^j\)
         is calculated with the cost of \ul{two bits in a single round}.
     \end{block}
 \end{frame}
 
 \subsection{Building Blocks: Multi-Fan-In Inner Product}
 \begin{frame}{Multi-Fan-In Inner Product of \(\lang\cdot\rang\)-shared Values}
-    \begin{block}{}
+    \begin{block}{Multi-Fan-In Inner Product of \(\lang\cdot\rang\)-shared Values}
         \begin{description}[Output]
             \ii[Input]
-            \(\lang\cdot\rang\)-shares of \(\vec{u}^1, \cdots, \vec{u}^M \in (\ZZ_2)^N\) and
+            \(\lang\cdot\rang\)-shares of \(\vec{u}^1, \cdots, \vec{u}^M \in (\ZZ_2)^N\),
             \([\cdot]\)-shares of \(\lambda_{\mcal{Q}}\) for each \(\mcal{Q} \subseteq \mcal{I}_k\)
             with \(|\mcal{Q}| > 1\) where \(\mcal{I}_k = \{\,\vec{u}^1_k,\cdots,\vec{u}^M_k\,\}\)
-            for \(k \in [N]\).
+            for \(k \in [N]\),
+            and \([\cdot]\)-sharing of \(\lambda_z\).
             \ii[Output]
             \(\lang\cdot\rang\)-shares of
-            \(\vec{u}^1 \odot \cdots \odot \vec{u}^N = \bigoplus_{k=1}^N \bigwedge_{j=1}^M \vec{u}^j_k\).
+            \(z \coloneqq \vec{u}^1 \odot \cdots \odot \vec{u}^M = \bigoplus_{k=1}^N \bigwedge_{j=1}^M \vec{u}^j_k\).
         \end{description}
         \pause
         \begin{enumerate}
@@ -225,8 +226,6 @@
                 \cdot [\lambda_{\mcal{I} \setminus \mcal{Q}}]_i).
             \)}
             \pause
-            \ii
-            \(P_i\) randomly chooses \([\lambda_z]_i \in \ZZ_2\).
             \ii
             \(P_i\) computes \([\msf{m}_z]_i = [z]_i \oplus [\lambda_z]_i\)
             and sends it to \(P_{1-i}\).

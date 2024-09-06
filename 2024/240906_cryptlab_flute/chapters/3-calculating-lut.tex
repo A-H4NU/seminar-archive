@@ -7,13 +7,14 @@
     \begin{exampleblock}{}
         \begin{description}[Output]
             \ii[Input]
-            \(\lang\cdot\rang\)-shares of \(\vec{u}^1, \cdots, \vec{u}^M \in (\ZZ_2)^N\) and
+            \(\lang\cdot\rang\)-shares of \(\vec{u}^1, \cdots, \vec{u}^M \in (\ZZ_2)^N\),
             \([\cdot]\)-shares of \(\lambda_{\mcal{Q}}\) for each \(\mcal{Q} \subseteq \mcal{I}_k\)
             with \(|\mcal{Q}| > 1\) where \(\mcal{I}_k = \{\,\vec{u}^1_k,\cdots,\vec{u}^M_k\,\}\)
-            for \(k \in [N]\).
+            for \(k \in [N]\),
+            and \([\cdot]\)-sharing of \(\lambda_z\).
             \ii[Output]
             \(\lang\cdot\rang\)-shares of
-            \(\vec{u}^1 \odot \cdots \odot \vec{u}^N = \bigoplus_{k=1}^N \bigwedge_{j=1}^M \vec{u}^j_k\).
+            \(z \coloneqq \vec{u}^1 \odot \cdots \odot \vec{u}^M = \bigoplus_{k=1}^N \bigwedge_{j=1}^M \vec{u}^j_k\).
         \end{description}
         With the prepared \ul{\(N(2^M - M - 1)\) multiplication triples},
         a \(\lang\cdot\rang\)-share of \(\bigodot_{j=1}^N \vec{u}^j\)
