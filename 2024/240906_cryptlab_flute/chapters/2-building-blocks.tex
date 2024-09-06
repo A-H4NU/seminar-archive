@@ -64,27 +64,27 @@
         \(\begin{aligned}[t]
             z &= uv = (\msf{m}_u \oplus \lambda_u)(\msf{m}_v \oplus \lambda_v) \\
             &=
-            {\underbrace{\msf{m}_u \msf{m}_v}_\text{public}} \oplus \msf{m}_u \lambda_v
-            \oplus \msf{m}_v \lambda_u \oplus {\underbrace{\lambda_u \lambda_v}_{=\lambda_{uv}}}
+            \msf{m}_u \msf{m}_v \oplus \msf{m}_u \lambda_v
+            \oplus \msf{m}_v \lambda_u \oplus \lambda_u \lambda_v
         \end{aligned}\)
     }}
 
     \begin{block}{Multiplication of \(\lang\cdot\rang\)-shared Values}
         \begin{description}[Output]
+            \small
             \ii[Input]
-            \(\lang\cdot\rang\)-shares of \(u, v \in \ZZ_2\)
-            and \([\cdot]\)-shares of \(\lambda_{uv} \coloneqq \lambda_u \lambda_v\).
+            \(\lang\cdot\rang\)-shares of \(u, v \in \ZZ_2\),
+            \([\cdot]\)-shares of \(\lambda_u \lambda_v\),
+            and \([\cdot]\)-shares of \(\lambda_z\).
             \ii[Output]
-            \(\lang\cdot\rang\)-shares of \(uv\).
+            \(\lang\cdot\rang\)-shares of \(z \coloneqq uv\).
         \end{description}
         \pause
         \begin{enumerate}
             \ii
             \(P_i\) computes \([z]_i = i \cdot \msf{m}_u \msf{m}_v
-            \oplus \msf{m}_u[\lambda_v]_i \oplus \msf{m}_v [\lambda_u]_i \oplus [\lambda_{uv}]_i\).
+            \oplus \msf{m}_u[\lambda_v]_i \oplus \msf{m}_v [\lambda_u]_i \oplus [\lambda_u \lambda_v]_i\).
             \pause
-            \ii
-            \(P_i\) randomly chooses \([\lambda_z]_i \in \ZZ_2\).
             \ii
             \(P_i\) computes \([\msf{m}_z]_i = [z]_i \oplus [\lambda_z]_i\)
             and sends it to \(P_{i-1}\).
@@ -95,6 +95,11 @@
         With the prepared multiplication triple,
         a \(\lang\cdot\rang\)-share of \(uv\) is calculated with the cost of \ul{two bits in a single round}.
     \end{block}
+
+    \begin{alertblock}{}
+        If \(z\) is an operand of multiplication in following steps through the circuit,
+        \(\lambda_z\) must be settled in the setup phase to optimize the online communication cost.
+    \end{alertblock}
 \end{frame}
 
 \subsection{Building Blocks: Inner Product}
@@ -102,17 +107,17 @@
     \begin{block}{Inner Product of \(\lang\cdot\rang\)-shared Values}
         \begin{description}[Output]
             \ii[Input]
-            \(\lang\cdot\rang\)-shares of \(u^1, \cdots, u^N, v^1 \cdots, v^N \in \ZZ_2\)
-            and \([\cdot]\)-shares of \(\lambda_{u^1} \lambda_{v^1},
-            \cdots, \lambda_{u^N} \lambda_{v^N}\).
+            \(\lang\cdot\rang\)-shares of \(u^1, \cdots, u^N, v^1 \cdots, v^N \in \ZZ_2\),
+            \([\cdot]\)-shares of \(\lambda_{u^1} \lambda_{v^1},
+            \cdots, \lambda_{u^N} \lambda_{v^N}\),
+            and \([\cdot]\)-shares of \(\lambda_z\).
             \ii[Output]
-            \(\lang\cdot\rang\)-shares of \(z = \bigoplus_{k=1}^N u^k v^k\).
+            \(\lang\cdot\rang\)-shares of \(z \coloneqq \bigoplus_{k=1}^N u^k v^k\).
         \end{description}
         \pause
         \begin{enumerate}
             \ii \(P_i\) computes \([u^k v^k]_i\) for \(k \in [N]\) as before.
             \pause
-            \ii \(P_i\) randomly chooses \([\lambda_z]_i \in \ZZ_2\).
             \ii \(P_i\) computes
             \([\msf{m}_z]_i = [\lambda_z]_i \oplus \bigoplus_{k=1}^N [u^k v^k]_i\)
             and sends it to \(P_{1-i}\).
@@ -131,9 +136,10 @@
     \begin{block}{Multi-Fan-In Product of \(\lang\cdot\rang\)-shared Values}
         \begin{description}[Output]
             \ii[Input]
-            \(\lang\cdot\rang\)-shares of \(u_1, \cdots, u_M \in \ZZ_2\) and \fbox{\(\mrm{???}\)}.
+            \(\lang\cdot\rang\)-shares of \(u_1, \cdots, u_M \in \ZZ_2\), \fbox{\(\mrm{???}\)},
+            and \([\cdot]\)-shares of \(\lambda_z\).
             \ii[Output]
-            \(\lang\cdot\rang\)-shares of \(\bigwedge_{j=1}^M u_j\).
+            \(\lang\cdot\rang\)-shares of \(z \coloneqq \bigwedge_{j=1}^M u_j\).
         \end{description}
     \end{block}
     \pause
@@ -166,9 +172,10 @@
     \begin{block}{}
         \begin{description}[Output]
             \ii[Input]
-            \(\lang\cdot\rang\)-shares of \(u_1, \cdots, u_M \in \ZZ_2\) and \([\cdot]\)-shares of
+            \(\lang\cdot\rang\)-shares of \(u_1, \cdots, u_M \in \ZZ_2\), \([\cdot]\)-shares of
             \(\lambda_{\mcal{Q}}\) for each \(\mcal{Q} \subseteq \mcal{I}\)
-            with \(|\mcal{Q}| > 1\) where \(\mcal{I} = \{\,u_1, \cdots, u_M\,\}\).
+            with \(|\mcal{Q}| > 1\) where \(\mcal{I} = \{\,u_1, \cdots, u_M\,\}\),
+            and \([\cdot]\)-shares of \(\lambda_z\).
             \ii[Output]
             \(\lang\cdot\rang\)-shares of \(\bigwedge_{j=1}^M u_j\).
         \end{description}
@@ -182,8 +189,6 @@
                 \cdot [\lambda_{\mcal{I} \setminus \mcal{Q}}]_i).
             \)}
             \pause
-            \ii
-            \(P_i\) randomly chooses \([\lambda_z]_i \in \ZZ_2\).
             \ii
             \(P_i\) computes \([\msf{m}_z]_i = [z]_i \oplus [\lambda_z]_i\)
             and sends it to \(P_{1-i}\).

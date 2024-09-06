@@ -154,9 +154,11 @@
         &= \bigoplus_{k=1}^{2^\delta} \left[
             \left(\bigwedge_{j=1}^\delta \left( \msf{m}_{\vec{u}^j_k} \oplus \lambda_{\vec{u}^j_k} \right) \right)
             \wedge \vec{y}^w_k \right] \\
-        &= \bigoplus_{k=1}^{2^\delta} \bigoplus_{\mcal{Q}_k \subseteq \mcal{I}_k}
-            \big( \msf{m}_{\mcal{Q}_k} \cdot \vec{y}^w_k \cdot \lambda_{\mcal{I}_k \setminus \mcal{Q}_k} \big).
+        &= \bigoplus_{k=1}^{2^\delta} \left[\vec{y}^w_k \cdot \bigoplus_{\mcal{Q}_k \subseteq \mcal{I}_k}
+            \big(\msf{m}_{\mcal{Q}_k} \cdot \lambda_{\mcal{I}_k \setminus \mcal{Q}_k} \big)\right]
     \end{align*}
+    where \(\mcal{I}_k \coloneqq \{\,\vec{u}^1_k, \cdots, \vec{u}^\delta_k\,\}\)
+    for each \(k \in [2^\delta]\).
 \end{frame}
 
 \subsection{Calculating LUT}
@@ -165,11 +167,12 @@
         \begin{description}[Output]
             \ii[Input]
             A \(\delta\)-to-\(\sigma\) LUT \(\Table\),
-            \(\lang\cdot\rang\)-shares of \(x^1, \cdots, x^\delta \in \ZZ_2\), and
+            \(\lang\cdot\rang\)-shares of \(x^1, \cdots, x^\delta \in \ZZ_2\),
             \([\cdot]\)-shares of \(\lambda_{\mcal{Q}}\) for each \(\mcal{Q} \subseteq \mcal{I}\)
-            with \(|\mcal{Q}| > 1\) where \(\mcal{I} = \{x^1,\cdots,x^\delta\}\).
+            with \(|\mcal{Q}| > 1\) where \(\mcal{I} = \{x^1,\cdots,x^\delta\}\), and
+            \([\cdot]\)-shares of \(\lambda_z\).
             \ii[Output]
-            \(\lang\cdot\rang\)-shares of \(\Table(x^1, \cdots, x^\delta)\).
+            \(\lang\cdot\rang\)-shares of \(z \coloneqq \Table(x^1, \cdots, x^\delta)\).
         \end{description}
         \pause
         \begin{enumerate}
@@ -181,14 +184,14 @@
             \(P_i\) computes, for each \(w \in [\sigma]\),
             \centerline{%
                 \(\displaystyle
-                [\vec{z}_w]_i = i \cdot \bigoplus_{k=1}^{2^\delta} (\msf{m}_{\mcal{I}_k} \cdot \vec{y}^w_k)
-                \oplus \bigoplus_{k=1}^{2^\delta} \bigoplus_{\mcal{Q}_k \subsetneq \mcal{I}_k} \big( \msf{m}_{\mcal{Q}_k} \cdot \vec{y}^w_k
-                \cdot [\lambda_{\mcal{I}_k \setminus \mcal{Q}_k}]_i \big).
+                [\vec{z}_w]_i = i \cdot \bigoplus_{k=1}^{2^\delta} (\vec{y}^w_k \cdot \msf{m}_{\mcal{I}_k})
+                \oplus \bigoplus_{k=1}^{2^\delta} \left[
+                    \vec{y}^w_k \cdot \bigoplus_{\mcal{Q}_k \subsetneq \mcal{I}_k} \big(
+                    \msf{m}_{\mcal{Q}_k} \cdot [\lambda_{\mcal{I}_k \setminus \mcal{Q}_k}]_i \big)
+                \right].
                 \)
             }
             \pause
-            \ii
-            \(P_i\) randomly chooses \([\lambda_{\vec{z}_w}]_i \in \ZZ_2\) for \(w \in [\sigma]\).
             \ii
             \(P_i\) computes \([\msf{m}_{\vec{z}_w}]_i = [\vec{z}_w]_i \oplus [\lambda_{\vec{z}_w}]_i\)
             for \(w \in [\sigma]\) and sends them to \(P_{1-i}\).
@@ -203,11 +206,12 @@
         \begin{description}[Output]
             \ii[Input]
             A \(\delta\)-to-\(\sigma\) LUT \(\Table\),
-            \(\lang\cdot\rang\)-shares of \(x^1, \cdots, x^\delta \in \ZZ_2\), and
+            \(\lang\cdot\rang\)-shares of \(x^1, \cdots, x^\delta \in \ZZ_2\),
             \([\cdot]\)-shares of \(\lambda_{\mcal{Q}}\) for each \(\mcal{Q} \subseteq \mcal{I}\)
-            with \(|\mcal{Q}| > 1\) where \(\mcal{I} = \{x^1,\cdots,x^\delta\}\).
+            with \(|\mcal{Q}| > 1\) where \(\mcal{I} = \{x^1,\cdots,x^\delta\}\), and
+            \([\cdot]\)-shares of \(\lambda_z\).
             \ii[Output]
-            \(\lang\cdot\rang\)-shares of \(\Table(x^1, \cdots, x^\delta)\).
+            \(\lang\cdot\rang\)-shares of \(z \coloneqq \Table(x^1, \cdots, x^\delta)\).
         \end{description}
         With the prepared \(2^\delta - \delta - 1\) multiplication triples,
         a \(\lang\cdot\rang\)-share of \(\Table(x^1, \cdots, x^\delta)\)
@@ -219,7 +223,7 @@
 \begin{frame}{Pros and Cons}
     \begin{block}{Pros}
         \begin{itemize}
-            \ii Any complex circuit can be represented by a \emph{interconnection of small LUTs}.
+            \ii Any complex circuit can be represented by an \emph{interconnection of small LUTs}.
             \ii Evaluation does not depend on the internal logic.
             \ii Setup does not depend on the number of outputs.
         \end{itemize}
