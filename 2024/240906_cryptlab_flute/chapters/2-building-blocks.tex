@@ -165,10 +165,6 @@
 \end{frame}
 
 \begin{frame}{Multi-Fan-In Product of \(\lang\cdot\rang\)-shared Values}
-    % \centerline{\(\displaystyle
-    %     z = \bigoplus_{\mcal{Q} \subseteq \mcal{I}}
-    %             (\msf{m}_{\mcal{Q}} \cdot \lambda_{\mcal{I} \setminus \mcal{Q}})
-    % \)}
     \begin{block}{Multi-Fan-In Product of \(\lang\cdot\rang\)-shared Values}
         \begin{description}[Output]
             \ii[Input]
@@ -183,7 +179,7 @@
         \begin{enumerate}
             \ii
             \(P_i\) computes
-            \centerline{\(
+            \centerline{\(\displaystyle
                 [z]_i = i \cdot \msf{m}_{\mcal{I}}
                 \oplus \bigoplus_{\mcal{Q} \subsetneq \mcal{I}} (\msf{m}_{\mcal{Q}}
                 \cdot [\lambda_{\mcal{I} \setminus \mcal{Q}}]_i).
@@ -223,7 +219,7 @@
             \centerline{\(\displaystyle
                 [z]_i = i \cdot \bigoplus_{k=1}^N \msf{m}_{\mcal{I}_k}
                 \oplus \bigoplus_{k=1}^N \bigoplus_{\mcal{Q} \subsetneq \mcal{I}_k} (\msf{m}_{\mcal{Q}}
-                \cdot [\lambda_{\mcal{I} \setminus \mcal{Q}}]_i).
+                \cdot [\lambda_{\mcal{I}_k \setminus \mcal{Q}}]_i).
             \)}
             \pause
             \ii

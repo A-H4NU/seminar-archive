@@ -155,8 +155,8 @@
         &= \bigoplus_{k=1}^{2^\delta} \left[
             \left(\bigwedge_{j=1}^\delta \left( \msf{m}_{\vec{u}^j_k} \oplus \lambda_{\vec{u}^j_k} \right) \right)
             \wedge \vec{y}^w_k \right] \\
-        &= \bigoplus_{k=1}^{2^\delta} \left[\vec{y}^w_k \cdot \bigoplus_{\mcal{Q}_k \subseteq \mcal{I}_k}
-            \big(\msf{m}_{\mcal{Q}_k} \cdot \lambda_{\mcal{I}_k \setminus \mcal{Q}_k} \big)\right]
+        &= \bigoplus_{k=1}^{2^\delta} \left[\vec{y}^w_k \cdot \bigoplus_{\mcal{Q} \subseteq \mcal{I}_k}
+            \big(\msf{m}_{\mcal{Q}} \cdot \lambda_{\mcal{I}_k \setminus \mcal{Q}} \big)\right]
     \end{align*}
     where \(\mcal{I}_k \coloneqq \{\,\vec{u}^1_k, \cdots, \vec{u}^\delta_k\,\}\)
     for each \(k \in [2^\delta]\).
@@ -187,8 +187,8 @@
                 \(\displaystyle
                 [\vec{z}_w]_i = i \cdot \bigoplus_{k=1}^{2^\delta} (\vec{y}^w_k \cdot \msf{m}_{\mcal{I}_k})
                 \oplus \bigoplus_{k=1}^{2^\delta} \left[
-                    \vec{y}^w_k \cdot \bigoplus_{\mcal{Q}_k \subsetneq \mcal{I}_k} \big(
-                    \msf{m}_{\mcal{Q}_k} \cdot [\lambda_{\mcal{I}_k \setminus \mcal{Q}_k}]_i \big)
+                    \vec{y}^w_k \cdot \bigoplus_{\mcal{Q} \subsetneq \mcal{I}_k} \big(
+                    \msf{m}_{\mcal{Q}} \cdot [\lambda_{\mcal{I}_k \setminus \mcal{Q}}]_i \big)
                 \right].
                 \)
             }
