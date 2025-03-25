@@ -1,0 +1,175 @@
+\documentclass[../250326_cryptlab_flute_security.tex]{subfiles}
+
+\begin{document}
+
+\subsection{Notations}
+\begin{frame}{Notations}
+    \begin{itemize}
+        \ii
+        Let \(\mcal{Q}\) be a nonempty set of
+        \(\lang\cdot\rang\)-shared values (wires).
+        We use the following notation:
+        \[\textstyle
+            \msf{m}_{\mcal{Q}} \triangleq \bigwedge_{u \in \mcal{Q}} \msf{m}_u
+            \quad\text{and}\quad
+            \lambda_{\mcal{Q}} \triangleq \bigwedge_{u \in \mcal{Q}} \lambda_u.
+        \]
+    \end{itemize}
+\end{frame}
+
+\subsection{Lookup Table}
+\begin{frame}{Lookup Table}
+    \def\onlyred{\only<2->{\color{red}}}
+    \begin{block}{LUT (Lookup Table)}
+        \(\delta\)-to-\(\sigma\) lookup table \(\Table\) is a function
+        \(\Table \colon \{0,1\}^\delta \to \{0,1\}^\sigma\).
+    \end{block}
+    \begin{columns}
+        \begin{column}{0.4\textwidth}
+            \centering
+            \begin{table}[H]
+                \centering
+                \begin{tabular}{ccc|c}
+                    \(x_1\)       & \(x_2\)       & \(x_3\)       & \(y\)         \\ \hline
+                    \onlyred\(0\) & \onlyred\(0\) & \onlyred\(0\) & \onlyred\(1\) \\
+                    \(0\)         & \(0\)         & \(1\)         & \(0\)         \\
+                    \(0\)         & \(1\)         & \(0\)         & \(0\)         \\
+                    \onlyred\(0\) & \onlyred\(1\) & \onlyred\(1\) & \onlyred\(1\) \\
+                    \(1\)         & \(0\)         & \(0\)         & \(0\)         \\
+                    \onlyred\(1\) & \onlyred\(0\) & \onlyred\(1\) & \onlyred\(1\) \\
+                    \(1\)         & \(1\)         & \(0\)         & \(0\)         \\
+                    \(1\)         & \(1\)         & \(1\)         & \(0\)
+                \end{tabular}
+            \end{table}
+            Example \(3\)-to-\(1\) LUT \(\Table\)
+        \end{column}
+        \pause
+        \begin{column}{0.4\textwidth}
+            \small
+            \centering
+            \begin{align*}
+                & (\ol{x_1} \land \ol{x_2} \land \ol{x_3}) \\
+                \oplus & (\ol{x_1} \land x_2 \land x_3) \\
+                \oplus & (x_1 \land \ol{x_2} \land x_3)
+            \end{align*}
+            {DNF Representation of \(\Table\)}
+            \pause
+            \begin{equation*}
+                y
+                = \begin{pmatrix} \ol{x_1} \\ \ol{x_1} \\ x_1 \end{pmatrix}
+                   \odot \begin{pmatrix} \ol{x_2} \\ x_2 \\ \ol{x_2} \end{pmatrix}
+                   \odot \begin{pmatrix} \ol{x_3} \\ x_3 \\ x_3 \end{pmatrix}
+            \end{equation*}
+            ``Multi-Fan-In Inner Product'' representation
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% \subsection{Oblivious Transfer}
+% \begin{frame}{Oblivious Transfer}
+%     \begin{block}{Oblivious Transfer}
+%         Let \(S\) be a \emph{sender} and \(R\) be a \emph{receiver}.
+%         The \(\binom{2}{1}\text{-}\OT_1\) functionality does the following:
+%         \centerline{%
+%             \begin{tabular}{c|cc}
+%                        & \(S\)                  & \(R\)             \\ \hline
+%                 Input  & \(a_0, a_1 \in \ZZ_2\) & \(r \in \{0,1\}\) \\
+%                 Learns & Nothing                & \(a_r\)
+%             \end{tabular}
+%         }
+%     \end{block}
+%     \pause
+%     \begin{block}{Random Oblivious Transfer}
+%         The \(\binom{2}{1}\text{-}\rOT_1\) functionality does the following:
+%         \centerline{%
+%         \begin{tabular}{c|cc}
+%                    & \(S\)                  & \(R\)             \\ \hline
+%             Input  & Nothing                & \(r \in \{0,1\}\) \\
+%             Learns & \(a_0, a_1 \in \ZZ_2\) & \(a_r\)
+%         \end{tabular}}
+%         where \(a_0\) and \(a_1\) are randomly chosen.
+%     \end{block}
+% \end{frame}
+
+\subsection{Secret Sharing Schemes}
+\begin{frame}{\([\cdot]\) Secret Sharing}
+    \centerline{\(P_0\), \(P_1\): parties}
+    \begin{block}{\([\cdot]\) Secret Sharing}
+        A bit \(v \in \ZZ_2\) is said to be \([\cdot]\)-\emph{shared}
+        between \(P_0\) and \(P_1\) if \(P_i\) holds \([v]_i\) such that
+        \[v = [v]_0 \oplus [v]_1.\]
+    \end{block}
+\end{frame}
+
+\begin{frame}{Multiplication of \([\cdot]\)-shared Values}
+    \begin{block}{Beaver's Multiplication Triple}
+        Suppose \(P_0\) and \(P_1\) have \([\cdot]\)-shares of \(u, v \in \ZZ_2\).
+        Suppose additionally that they have \([\cdot]\)-shares of \(a, b, c\) where \(c = ab\).
+        \begin{enumerate}
+            \ii
+            \(P_i\) computes \([u \oplus a]_i\) and \([v \oplus b]_i\),
+            and sends them to \(P_{1-i}\).
+            \ii
+            \(P_0\) and \(P_1\) now know \(d \coloneqq u \oplus a\) and \(e \coloneqq v \oplus b\).
+            \ii
+            \(P_i\) computes \([z]_i = i \cdot de \oplus d[b]_i \oplus e[a]_i \oplus [c]_i\).
+        \end{enumerate}
+        Then, \([z]_0 \oplus [z]_1 = z = uv\).
+        % With the prepared \emph{multiplication triple},
+        % a \([\cdot]\)-share of \(uv\) is calculated with the cost of \ul{four bits in a single round}.
+    \end{block}
+
+    \begin{exampleblock}{}
+        \[\begin{aligned}[t]
+            z &= uv = (d \oplus a)(e \oplus b) \\
+              &= {\underbrace{de}_\text{public}} \oplus db \oplus ea \oplus \underbrace{ab}_{=c}
+        \end{aligned}\]
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{\(\lang \cdot \rang\) Secret Sharing}
+    \begin{block}{\(\lang\cdot\rang\) Secret Sharing}
+        A bit \(v \in \ZZ_2\) is said to be \(\lang\cdot\rang\)\emph{-shared} if:
+        \begin{enumerate}
+            \ii
+            A value \(\lambda_v \in \ZZ_2\) is \([\cdot]\)-shared between \(P_0\) and \(P_1\).
+            \ii
+            A value \(\msf{m}_v \in \ZZ_2\) is public.
+            \ii
+            \(v = \msf{m}_v \oplus \lambda_v\)
+        \end{enumerate}
+
+        The \(\lang \cdot \rang\)-share of \(v\) is denoted
+        \(\lang v \rang_i = (\msf{m}_v, [\lambda_v]_i)\).
+    \end{block}
+\end{frame}
+
+\subsection{Simple Multiplication Functionality}
+
+\begin{frame}{Multiplication of \([\cdot]\)-Shared Values}
+    We will use the following functionality as black-box.
+    In other words, we assume that there is some protocol that securely realizes this functionality.
+
+    \begin{block}{\(\mcal{F}_\msf{AND}\): Multiplication of \([\cdot]\)-Shared Values (Ideal)}
+        \begin{description}[Output]
+            \ii[Input] \([\cdot]\)-shares of \(u, v \in \ZZ_2\) from \(P_0\) and \(P_1\).
+            \ii[Output] \([\cdot]\)-shares of \(uv \in \ZZ_2\) to each \(P_i\)
+        \end{description}
+        \begin{enumerate}
+            \ii
+            Recover \(u, v \in \ZZ_2\) from the shares
+            and calculate \(z = uv\).
+            \ii
+            Sample random \([z]_0 \rgets \ZZ_2\).
+            \ii
+            Send \([z]_0\) to \(P_0\) and \([z]_0 \oplus z\) to \(P_1\).
+        \end{enumerate}
+    \end{block}
+
+    \begin{exampleblock}{}
+        Note that both \([z]_0\) and \([z]_1\) are
+        independent from inputs and are uniformly distributed in \(\ZZ_2\).
+    \end{exampleblock}
+\end{frame}
+
+\end{document}

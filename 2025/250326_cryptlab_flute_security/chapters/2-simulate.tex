@@ -1,0 +1,52 @@
+\documentclass[../250326_cryptlab_flute_security.tex]{subfiles}
+
+\begin{document}
+
+\subsection{Simulation Based Security}
+
+\begin{frame}{Simulation Based Notion of Security}
+    \begin{block}{Definition}
+        Let \(X = \{X(a,n)\}_{a \in \{0,1\}^\ast, n \in \NN}\) and \(Y = \{Y(a,n)\}_{a \in \{0,1\}^\ast, n \in \NN}\)
+        be two probability ensembles. Then, we say that \(X\) and \(Y\) are \emph{computationally}
+        \emph{indistinguishable} if, for any PPT algorithm \(D\), and for any \(a \in \{0,1\}^\ast\),
+        we have
+        \[
+            \Pr[D(X(a, n), a) = 1] - \Pr[D(Y(a, n), a) = 1] = \msf{negl}(n)\text.
+        \]
+        We write \(X \overset{\msf{c}}{\equiv} Y\) if they are computationally indistinguishable.
+    \end{block}
+\end{frame}
+
+\begin{frame}{Simulation Based Notion of Security}
+    \begin{block}{Definition}
+        Let \(f = (f_1, f_2)\) be a two-party functionality.
+        A (poly-time) protocol \(\pi\) \emph{securely computes \(f\) against static
+        semi-honest adversaries} if there are PPT algorithms \(\mcal{S}_1\) and \(\mcal{S}_2\) such that
+        \footnotesize
+        \begin{align*}
+            \bigl\{ \bigl( \mcal{S}_1(1^n, x, f_1(x, y)), f(x, y) \bigr) \bigr\}_{x,y,n}
+            &\overset{\msf{c}}{\equiv}
+            \bigl\{ \bigl( \msf{view}_1^\pi(x, y, n), \msf{output}^\pi(x, y, n) \bigr)
+            \bigr\}_{x,y,n} \\
+            \bigl\{ \bigl( \mcal{S}_2(1^n, y, f_1(x, y)), f(x, y) \bigr) \bigr\}_{x,y,n}
+            &\overset{\msf{c}}{\equiv}
+            \bigl\{ \bigl( \msf{view}_2^\pi(x, y, n), \msf{output}^\pi(x, y, n) \bigr)
+            \bigr\}_{x,y,n}
+        \end{align*}
+        \small
+        where
+        \begin{itemize}
+            \ii
+            \(x\) and \(y\) are inputs of \(P_0\) and \(P_1\), respectively,
+            \ii
+            \(n\) is the security parameter,
+            \ii
+            \(\msf{view}_i^\pi(x, y, n)\)
+            is the tuple of \(P_i\)'s input, incoming messages, and internal random tape, and
+            \ii
+            \(\msf{output}^\pi(x, y, n)\) is the output of \(\pi\) (of both parties).
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\end{document}

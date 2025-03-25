@@ -1,0 +1,164 @@
+\documentclass[../240906_cryptlab_flute.tex]{subfiles}
+
+\begin{document}
+
+\subsection{Functionality and Protocol for LUT Computation}
+
+\begin{frame}{The LUT Functionality}
+
+    \begin{block}{\(\mcal{F}_\msf{LUT}\): LUT (Ideal)}
+        \begin{description}[Output]
+            \ii[Input]
+            \(\lang\cdot\rang\)-shares of \(x^1, \cdots, x^\delta \in \ZZ_2\)
+            \ii[Output]
+            \(\lang\cdot\rang\)-shares of \(\mbf{z} \coloneqq \Table(x^1, \cdots, x^\delta)\) to each
+            user.
+        \end{description}
+        \begin{enumerate}
+            \ii
+            Reconstruct \(x^1, \cdots, x^\delta \in \ZZ_2\)
+            from the shares
+            and calculate \(z = \Table(x^1, \cdots, x^\delta)\).
+            \ii
+            Sample random \([\lambda_z]_i \xleftarrow{\$} \ZZ_2\)
+            for \(i \in \{0,1\}\) and set \(\msf{m}_z \coloneqq z \oplus \lambda_z\).
+            \ii
+            Return \((\msf{m}_z, [\lambda_z]_i)\) to \(P_i\).
+        \end{enumerate}
+    \end{block}
+
+    \pause
+    \begin{exampleblock}{}
+        If \((\msf{m}_z, [\lambda_z]_0)\) and \((\msf{m}_z, [\lambda_z]_1)\)
+        denote outputs of \(P_0\) and \(P_1\), respectively,
+        then \(\msf{m}_z\), \([\lambda_z]_0\), and \([\lambda_z]_1\)
+        are independent and unifromly distributed in \(\ZZ_2\).
+    \end{exampleblock}
+
+\end{frame}
+
+\begin{frame}{FLUTE Protocol}
+    \def\onlyred{\only<3->{\color{red}}}
+    \begin{block}{\(\Pi_\msf{LUT}\): LUT (Real)}
+        \begin{description}[Output]
+            \ii[Input]
+            \(\lang\cdot\rang\)-shares of \(x^1, \cdots, x^\delta \in \ZZ_2\)
+            \ii[Output]
+            \(\lang\cdot\rang\)-shares of \(\mbf{z} \coloneqq \Table(x^1, \cdots, x^\delta)\) to each
+            user.
+        \end{description}
+        \footnotesize
+        \pause
+        Setup Phase:
+        \begin{enumerate}
+            \ii
+            \normalsize
+            Each user samples {\onlyred\([\lambda_{\mbf{z}_w}]_i \xleftarrow{\$} \ZZ_2\)} for \(w \in [\sigma]\)
+            and \(i \in \{0,1\}\).
+            \ii
+            Each user let \(\mcal{I} \coloneqq \{x^1, \cdots, x^\delta\}\)
+            and use \(\mcal{F}_\msf{AND}\)
+            to get shares \([\lambda_{\mcal{Q}}]_i\) for \(\OO \neq \mcal{Q} \subseteq \mcal{I}\).
+        \end{enumerate}
+        \pause
+        \footnotesize
+        Online Phase:
+        \begin{enumerate}
+            \footnotesize
+            \color{gray}
+            \ii
+            \(P_i\) computes its share of \(\vec{u}^j_k = \ol{x^j} \oplus \vec{e}^j_k\)
+            for \(j \in [\delta]\) and \(k \in [2^\delta]\).
+            \ii
+            \(P_i\) computes, for each \(w \in [\sigma]\),
+            \centerline{%
+                \(\displaystyle
+                [\vec{z}_w]_i = i \cdot \bigoplus_{k=1}^{2^\delta} (\vec{y}^w_k \cdot \msf{m}_{\mcal{I}_k})
+                \oplus \bigoplus_{k=1}^{2^\delta} \left[
+                    \vec{y}^w_k \cdot \bigoplus_{\mcal{Q} \subsetneq \mcal{I}_k} \big(
+                    \msf{m}_{\mcal{Q}} \cdot [\lambda_{\mcal{I}_k \setminus \mcal{Q}}]_i \big)
+                \right].
+                \)
+            }
+            \ii
+            \normalsize
+            \color{black}
+            \(P_i\) computes \([\msf{m}_{\vec{z}_w}]_i = [\vec{z}_w]_i \oplus {\onlyred[\lambda_{\vec{z}_w}]_i}\)
+            for \(w \in [\sigma]\) and sends them to \(P_{1-i}\).
+        \end{enumerate}
+    \end{block}
+\end{frame}
+
+\subsection{Security Analysis of FLUTE}
+
+\begin{frame}{Building the Simulator}
+    \begin{block}{Building the simulator \(\mcal{S}_0\) when \(P_0\) is corrupt}
+        \begin{description}[Output]
+            \ii[Input] \(1^n\), \(\lang x^j \rang_0\) for \(j \in [\delta]\),
+            and \((\msf{m}_{\mbf{z}_w}, [\lambda_{\mbf{z}_w}]_0)\) for \(w \in [\sigma]\).
+            \ii[Output] Simulation of \(P_0\)'s view. In other words,
+            \((\lang \vec{x} \rang_0, r; \text{(transcripts from \(\mcal{F}_\msf{AND}\))}, [\msf{m}_{\mbf{z}}]_1)\)
+            mimicking \(P_0\)'s view.
+            \(P_0\)'s incoming messages
+        \end{description}
+
+        \begin{enumerate}
+            \ii
+            Randomly fix a random tape \(r\) for \(P_0\).
+            \pause
+            \ii
+            Imagine \(P_1\) with arbitrary inputs in the head.
+            For instance, inputs of \(P_1\) are all zero.
+            \ii
+            Execute \(\Pi_\msf{LUT}\) with the imaginary party \(P_1\)
+            except:
+            \pause
+            \ii
+            When \(P_1\) is about to send its \([\msf{m}_{\mbf{z}_w}]_1\)
+            values, hand \(P_0\) the (possibly flipped) values
+            so that \(P_0\)'s output matches \((\msf{m}_{\mbf{z}_w}, [\lambda_{\mbf{z}_w}]_0)\).
+            \ii
+            Output the view from the imaginary execution of \(\Pi_\msf{LUT}\).
+        \end{enumerate}
+    \end{block}
+\end{frame}
+
+\begin{frame}{Building the Simulator}
+    \begin{block}{}
+        When \(P_1\) is about to send its \([\msf{m}_{\mbf{z}_w}]_1\)
+        values, hand \(P_0\) the (possibly flipped) values
+        so that \(P_0\)'s output matches \((\msf{m}_{\mbf{z}_w}, [\lambda_{\mbf{z}_w}]_0)\).
+    \end{block}
+    This is possible since \(P_1\) can always \emph{fake}
+    the sampled value of \([\lambda_{\mbf{z}_w}]_1\).
+    (\(P_1\) randomly samples \([\lambda_{\mbf{z}_w}]_1\) in the setup phase.)
+\end{frame}
+
+\begin{frame}{Building the Simulator}
+    \begin{block}{Proof? that \(\mcal{S}_0\) works}
+        \pause
+        The only differences between the real and the ideal world are:
+        \begin{enumerate}
+            \ii
+            Possible lying about the choice of \([\lambda_{\mbf{z}_w}]_1\).
+            \ii
+            Inputs of \(P_1\) are arbitrarily chosen.
+        \end{enumerate}
+
+        \pause
+        Hence, any good distinguisher \(D\) for the real and the ideal world
+        must distinguish one of them.
+        \begin{enumerate}
+            \ii
+            If \(D\) distinguishes \([\lambda_{\mbf{z}_w}]_1\),
+            then it successfully attacks the PRF primitive.
+            \ii
+            If \(D\) detects that the simulators decided the choice,
+            then it successfully attacks the \(\mcal{F}_\msf{AND}\) functionality.
+            \(\mcal{F}_\msf{AND}\) is called a constant number (\(< 2^\delta\))
+            of times.
+        \end{enumerate}
+    \end{block}
+\end{frame}
+
+\end{document}
