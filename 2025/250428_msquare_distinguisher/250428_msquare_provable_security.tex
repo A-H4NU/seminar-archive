@@ -1,0 +1,54 @@
+%! TEX TS-program = lualatex
+\RequirePackage{scrlfile}
+\makeatletter
+\AfterPackage{beamerbasemodes}{\beamer@amssymbfalse}
+\makeatother
+
+\documentclass[handout]{beamer}
+% \documentclass{beamer}
+\usefonttheme{professionalfonts}
+\usepackage{preamble}
+\usepackage{setspace}
+
+\hypersetup{
+    colorlinks=false,
+    urlcolor=cyan,
+    pdftitle={Computational Logic Seminar},
+    pdfpagemode=FullScreen,
+}
+
+\title{Provable Security}
+\author{수학문제연구회 36기 한승우}
+\date{2025년 4월 28일}
+
+\def\dgets{\xleftarrow{\$}}
+
+\begin{document}
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\section{Preliminaries}
+\subfile{chapters/1-preliminaries.tex}
+
+\section{Encryption}
+\subfile{chapters/2-encryption.tex}
+
+\section{Keyed Function}
+\subfile{chapters/3-keyed-function.tex}
+
+\section{PRP/PRF Switching}
+\subfile{chapters/4-prp-prf-switching.tex}
+%
+% \section{FLUTE}
+% \subfile{chapters/3-flute.tex}
+
+\section*{\mbox{}}
+\begin{frame}{}
+    \begin{center}
+        Questions?
+    \end{center}
+\end{frame}
+% \subfile{chapters/0-reference.tex}
+
+\end{document}

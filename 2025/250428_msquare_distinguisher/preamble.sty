@@ -1,0 +1,72 @@
+\makeatletter
+\usetheme{Darmstadt}
+\usepackage{mathtools}
+\beamertemplatenavigationsymbolsempty % remove navigation bar
+\usepackage{kotex}
+\usepackage[charter]{mathdesign}
+\usepackage{subfiles}
+\usepackage{bm}
+
+% Set the font to 'Pretendard'
+% https://github.com/orioncactus/pretendard
+\def\@mainfontname{Pretendard}
+\def\@mainhanjafontname{Noto Sans CJK KR}
+
+\setsanshangulfont{\@mainfontname}[
+    AutoFakeSlant,
+    CompressPunctuations,
+    CharRaise=-.5pt,
+    BoldItalicFeatures={FakeSlant=0.15}
+]
+\setsanshanjafont{\@mainhanjafontname}[
+    AutoFakeSlant,
+    CharRaise=-.5pt,
+    BoldItalicFeatures={FakeSlant=0.15}
+]
+% Let alphabets be printed with the hangul font.
+\registerpunctuations{
+    65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88,
+    89, 90, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114,
+    115, 116, 117, 118, 119, 120, 121, 122
+}
+\registerpunctuations{35, 36, 37, 38, 42, 43, 45, 61, 64, 94, 95}
+
+\usepackage[charter]{mathdesign}
+
+\setbeamerfont{frametitle}{size=\large, series=\bfseries}
+
+\newcommand\Table{\msf{T}}
+\newcommand\OT{\msf{OT}}
+\newcommand\rOT{\msf{rOT}}
+\newcommand\rgets{\xleftarrow{\$}}
+\DeclareMathAlphabet{\altmathcal}{OMS}{cmsy}{m}{n}
+\DeclareMathAlphabet\mathbfcal{OMS}{cmsy}{b}{n}
+\newcommand{\mcal}[1]{\altmathcal{#1}}
+\newcommand{\mbb}[1]{\mathbb{#1}}
+\newcommand{\mscr}[1]{\mathscr{#1}}
+\newcommand{\mbf}[1]{\mathbf{#1}}
+\newcommand{\mrm}[1]{\mathrm{#1}}
+\newcommand{\msf}[1]{\mathsf{#1}}
+\newcommand{\mtt}[1]{\mathtt{#1}}
+\newcommand{\mfr}[1]{\mathfrak{#1}}
+\newcommand{\ttt}[1]{\texttt{#1}}
+\newcommand{\mbc}[1]{\mathbfcal{#1}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\RR}{\mathbb{N}}
+\newcommand{\OO}{\varnothing}
+
+\newcommand{\eps}{\epsilon}
+\newcommand{\veps}{\varepsilon}
+\newcommand{\fall}{\forall}
+\newcommand{\exs}{\exists}
+\newcommand{\ol}{\overline}
+\newcommand{\ul}{\underline}
+\newcommand{\cl}{\overline}
+\newcommand\ii\item
+\newcommand{\lang}{\langle}
+\newcommand{\rang}{\rangle}
+
+\renewcommand{\vec}[1]{\boldsymbol{\mathbf{#1}}}
+
+\makeatother

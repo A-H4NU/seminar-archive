@@ -1,0 +1,109 @@
+\documentclass[../250428_msquare_provable_security.tex]{subfiles}
+
+\begin{document}
+
+\subsection{Encryption}
+\begin{frame}{Encryption}
+    \begin{block}{암호화?}
+        \begin{itemize}
+            \ii \(\mcal{P} = \text{plaintext의 집합}\) (암호화하고 싶은 것들)
+            \ii \(\mcal{C} = \text{ciphertext의 집합}\) (암호화된 것들)
+            \ii \(\mcal{K} = \text{key들의 집합}\) (i.e., 비밀번호의 집합)
+            \pause
+            \ii \(\msf{Enc} \colon \mcal{K} \times \mcal{P} \to \mcal{C}\): 암호화 함수(알고리즘)
+            \ii \(\msf{Dec} \colon \mcal{K} \times \mcal{C} \to \mcal{P}\): 복호화 함수(알고리즘)
+        \end{itemize}
+    \end{block}
+    암호화가 ``작동''하기 위해서 \(\msf{Enc}\)와 \(\msf{Dec}\)가 만족해야 할 성질?
+    \begin{itemize}
+        \ii \(\msf{Dec}(k, \msf{Enc}(k, x)) = x\) for all \(x \in \mcal{P}\) and \(k \in \mcal{K}\).
+        \pause
+        \ii 충분한가? \(\msf{Enc}\)와 \(\msf{Dec}\)가 identity function이면 안 될 것 같은데...
+    \end{itemize}
+    \pause
+    ``암호화''가 작동하기 위해서 \(\msf{Enc}\)와 \(\msf{Dec}\)가 만족해야 할 성질?
+    \begin{itemize}
+        \ii\pause
+        plaintext \(x\)에 대한 정보를 \(\msf{Enc}(k, x)\)에서 알 수 없어야 함
+        \ii
+        이걸 어떻게 수학적으로 표현할까?
+    \end{itemize}
+\end{frame}
+
+\subsection{Perfect Security}
+\begin{frame}{Perfect Security}
+    \begin{block}{Perfect Security (Information-Theoretic Security)}
+        암호화 스킴이 ``완벽히 안전''하다는 것은:
+        \pause
+        \begin{itemize}
+            \ii
+            모든 \(x_0, x_1 \in \mcal{P}\)와 모든 \(c \in \mcal{C}\)에 대해
+            \[\Pr_{k \gets \mcal{K}}[c = \msf{Enc}(k, x_0)] = \Pr_{k \gets \mcal{K}}[c = \msf{Enc}(k, x_1)]\text.\]
+        \end{itemize}
+    \end{block}
+
+    암호화 스킴이 완벽히 안전하면
+    ``\(x\)의 ciphertext''의 분포와
+    ``random string의 ciphertext''의 분포가 같음
+\end{frame}
+
+\begin{frame}{Perfect Security: Another Formulation}
+    어떤 방어자와 (시간이 무제한으로 주어진) 어떤 probabilistic algorithm \(\mcal{D}\)가 공격자인
+    다음 ``security game''을 생각해 보자.
+    \pause
+    \begin{enumerate}
+        \ii
+        방어자는 \(x_0, x_1 \in \mcal{P}\)를 고르고 공격자 \(\mcal{D}\)에게 보낸다.
+        \ii
+        방어자는 임의의 key \(k \in \mcal{K}\)와 \(b \in \{0,1\}\)를 uniform하게 고른다.
+        \pause
+        \ii
+        방어자는 \(c = \msf{Enc}(k, x_b)\)를 계산해서 공격자 \(\mcal{D}\)에게 입력으로 보낸다.
+        \pause
+        \ii
+        \(\mcal{D}(x_0, x_1, c)\)의 출력이 \(b\)과 같으면 공격자가 이기고, 다르면 방어자가 이긴다.
+    \end{enumerate}
+    \pause
+
+    \begin{block}{Perfect Security: Another Formulation}
+        암호화 스킴이 ``완벽히 안전''하다는 것은:
+        \begin{itemize}
+            \ii
+            모든 \(x_0, x_1 \in \mcal{P}\)에 대해
+            위 security game에서 공격자가 이길 확률은 항상 \(1/2\)이다.
+            \pause
+            \ii
+            다른 말로, 모든 \(x_0, x_1 \in \mcal{P}\)에 대해
+            위 security game에서 공격자의 최선의 전략은 ``찍기''이다.
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\subsection{One-Time Pad}
+\begin{frame}{Example: One-Time Pad}
+    \(\mcal{P} = \mcal{C} = \mcal{K} = \{0,1\}^\ell\)인 다음 암호화 스킴을 살펴보자.
+    \pause
+    \begin{block}{One-Time Pad (OTP)}
+        \begin{itemize}
+            \ii
+            \(\msf{Enc}(k, x) = k \oplus x\)
+            \ii
+            \(\msf{Dec}(k, c) = k \oplus c\)
+        \end{itemize}
+    \end{block}
+
+    \pause
+    \begin{itemize}
+        \ii
+        당연히 \(\msf{Dec}(k, \msf{Enc}(k, x)) = k \oplus (k \oplus x) = x\).
+        \pause
+        \ii
+        모든 \(x \in \mcal{P}\)에 대해서 \(\msf{Enc}(k, x)\)의 분포는 모두 같다.
+    \end{itemize}
+    \pause
+    따라서 \textbf{One-Time Pad는 완벽히 안전하다}.
+    \pause
+    그런데 왜 아무도 One-Tiem Pad를 실제로 안 쓸까?
+\end{frame}
+
+\end{document}

@@ -1,0 +1,60 @@
+\documentclass[../250428_msquare_provable_security.tex]{subfiles}
+
+\begin{document}
+
+\subsection{Notations}
+\begin{frame}{Notations}
+    \begin{itemize}
+        \ii
+        \(\{0,1\}^n\): 0, 1로 이루어진 \(n\)-tuple의 집합
+        \begin{itemize}
+            \ii e.g. \(\{0,1\}^2 = \{(0,0),(0,1),(1,0),(1,1)\}\)
+        \end{itemize}
+
+        \ii
+        \(\{0,1\}^\ast\): 0, 1로 이루어진 finite sequence의 집합
+        \begin{itemize}
+            \ii e.g. \(\{0,1\}^\ast = \bigcup_{n=0}^\infty \{0,1\}^n\)
+        \end{itemize}
+        \pause
+
+        \ii
+        \(u, v \in \{0,1\}^n\)를 \(\ZZ_2^n\) 위의 원소로 볼 수 있는데
+        이때 \(u \oplus v\)를 element-wise addition으로 정의 (XOR)
+        \begin{itemize}
+            \ii e.g. \((0,1,0) \oplus (1,1,0) = (1,0,1)\).
+        \end{itemize}
+        \pause
+
+        \ii
+        \(\mcal{F}_n =\mbox{}\)함수 \(\{0,1\}^n \to \{0,1\}^n\)의 집합
+        \begin{itemize}
+            \ii \(|\mcal{F}_n| = 2^{n 2^n}\)
+        \end{itemize}
+
+        \ii
+        \(\mcal{P}_n = \mbox{}\) 순열(permutation) \(\{0,1\}^n \to \{0,1\}^n\)의 집합
+        \begin{itemize}
+            \ii \(|\mcal{P}_n| = (2^n)!\)
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Probabilistic Algorithm}
+    \begin{itemize}
+        \ii
+        Probabilistic algorithm\(\mbox{} = \mbox{}\)probabilistic Turing machine\(\mbox{} =
+        \mbox{}\)``동전을 던질 수 있는 컴퓨터''의 수학적 모델링
+        \pause
+
+        \ii
+        \(\Pr[y \gets \mcal{D}(x)] = \mbox{}\)probabilistic algorithm \(\mcal{D}\)에
+        입력 \(x\)를 주었을 때 출력이 \(y\)일 확률 (\(x\)가 고정)
+
+        \ii
+        \(\Pr[x \dgets X \colon y \gets \mcal{D}(x)] = \mbox{}\)\(X\)에서 \(x\)를 uniform하게 뽑아
+        probabilistic algorithm \(\mcal{D}\)에 입력으로 주었을 때 출력이 \(y\)일 확률
+    \end{itemize}
+\end{frame}
+
+\end{document}

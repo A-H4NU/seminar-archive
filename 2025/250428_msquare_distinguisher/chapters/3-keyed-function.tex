@@ -1,0 +1,134 @@
+\documentclass[../250428_msquare_provable_security.tex]{subfiles}
+
+\begin{document}
+
+\subsection{Keyed Function}
+
+\begin{frame}{Keyed Function}
+    \begin{block}{Keyed Function}
+        함수
+        \[
+            f \colon \mcal{K} \times \{0,1\}^n \to \{0,1\}^n
+        \]
+        을 생각해 보자.\pause
+        이 함수의 첫 번째 parameter \(k \in \mcal{K}\)를 고정하여 얻은 새 함수
+        \begin{align*}
+                f_k\colon \{0,1\}^n &\longrightarrow \{0,1\}^n \\
+                x&\longmapsto f(k, x)
+        \end{align*}
+        는 \(\mcal{F}_n\)의 원소로 볼 수 있을 것이다.
+        \pause
+        이런 함수 \(f\)를 \textbf{keyed function}이라고 부른다.
+    \end{block}
+\end{frame}
+
+\begin{frame}{Pseudorandom Function (PRF)}
+    Keyed function \(f \colon \mcal{K} \times \{0,1\}^n \to \{0,1\}^n\)가 주어져 있다.
+
+    전과 비슷하게, 어떤 방어자와 (시간이 \textbf{다항 시간}으로 제한된) 어떤 probabilistic algorithm \(\mcal{D}\)가 공격자인
+    다음 ``security game''을 생각해 보자.
+    \pause
+    \begin{enumerate}
+        \ii
+        방어자는 \(b \in \{0,1\}\)를 uniform하게 고른다.
+        \pause
+        \ii
+        \(b = 0\)이면, 방어자는
+        임의의 key \(k \in \mcal{K}\)를 골라 \(f^\ast = f_k\)로 둔다.
+        \ii
+        \(b = 1\)이면, 방어자는 임의의 \(f^\ast \dgets \mcal{F}_n\)을 고른다.
+        \pause
+        \ii
+        공격자는 여러 번의 ``질의''를 할 수 있다.
+        각 질의 \(x_i\)에 대해 방어자는 \(y_i = f^\ast(x_i)\)를 공격자에게 알려준다.
+        \pause
+        \ii
+        모든 질의의 마지막에 공격자는 \(b' \in \{0,1\}\)을 결정한다.
+        만약 \(b = b'\)이면 공격자가 이기고, \(b \neq b'\)이면 방어자가 이긴다.
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{Pseudorandom Function (PRF)}
+    \begin{block}{Advantage of Distinguisher}
+        공격자 \(\mcal{D}\)에 대해,
+        \begin{align*}
+            P_{\msf{re}} &\coloneqq \Pr[k \dgets \mcal{K} \colon 1 \gets \mcal{D}^{f_k}] \\
+            P_{\msf{id}} &\coloneqq \Pr[F \dgets \mcal{F}_n \colon 1 \gets \mcal{D}^{F}]
+        \end{align*}
+        이라고 하면,
+        \[
+            \msf{Adv}_f(D) = |P_{\msf{id}} - P_{\msf{re}}|
+        \]
+        라고 하자.
+    \end{block}
+
+    \pause
+    \[
+        (\text{\(\mcal{D}\)가 이길 확률})
+        = \frac{1}{2}P_{\msf{id}} + \frac{1}{2}(1-P_{\msf{re}})
+        = \frac{1}{2} + \frac{1}{2}(P_{\msf{id}} - P_{\msf{re}})
+    \]
+    우리는 \(\mcal{D}\)가 이길 확률을 줄이는 게 아니라 정확히 \(1/2\) 근처로 맞춰야 한다.
+    (Why?)
+\end{frame}
+
+\begin{frame}{Pseudorandom Function (PRF)}
+    \begin{block}{Pseudorandom Function (PRF)}
+        만약 모든 \(\mcal{D}\)에 대해 \(\msf{Adv}_f(\mcal{D}) \le (\text{negligible function on \(n\)})\) 이하이면
+        \(f\)를 \textbf{pseudorandom function (PRF)}라고 부른다.
+    \end{block}
+    {
+        \(g(n)\) is negligible if \(\lim\limits_{n \to \infty} n^k g(n) = 0\) for all \(k > 0\).
+    }
+\end{frame}
+
+\begin{frame}{One-Time Pad with PRF}
+    \(f\)가 pseudorandom function이면,
+    각 \(k \in \mcal{K}\)에 대해
+    \[
+        f_k(0) \parallel f_k(1) \parallel f_k(2) \parallel \cdots
+    \]
+    는 random sequence과 구별할 수 없다. 그러면...?
+    \pause
+
+    \begin{block}{One-Time Pad with PRF}
+        \begin{itemize}
+            \ii
+            \(\msf{Enc}(k, x) = x \oplus (f_k(0) \parallel f_k(1) \parallel f_k(2) \parallel \cdots)\)
+            \ii
+            \(\msf{Enc}(k, c) = c \oplus (f_k(0) \parallel f_k(1) \parallel f_k(2) \parallel \cdots)\)
+        \end{itemize}
+    \end{block}
+
+    이런 One-Time Pad with PRF는 더 이상 완전히 안전하지는 않지만,
+    기존의 One-Time Pad를 ``안전하게 구현''한다고 할 수 있다.
+\end{frame}
+
+\begin{frame}{Pseudorandom Permutation (PRP)}
+    \(f_k \in \mcal{P}_n\)인 keyed function \(f \colon \mcal{K} \times \{0,1\}^n \to \{0,1\}^n\)가
+    주어져 있다.
+
+    \pause
+    \begin{enumerate}
+        \ii
+        방어자는 \(b \in \{0,1\}\)를 uniform하게 고른다.
+        \ii
+        \(b = 0\)이면, 방어자는
+        임의의 key \(k \in \mcal{K}\)를 골라 \(f^\ast = f_k\)로 둔다.
+        \ii
+        \(b = 1\)이면, 방어자는 임의의 \(f^\ast \dgets {\color{red}\mcal{P}_n}\)을 고른다.
+        \ii
+        공격자는 여러 번의 ``질의''를 할 수 있다.
+        각 질의 \(x_i\)에 대해 방어자는 \(y_i = f^\ast(x_i)\)를 공격자에게 알려준다.
+        \ii
+        모든 질의의 마지막에 공격자는 \(b' \in \{0,1\}\)을 결정한다.
+        만약 \(b = b'\)이면 공격자가 이기고, \(b \neq b'\)이면 방어자가 이긴다.
+    \end{enumerate}
+
+    \begin{block}{Pseudorandom Function (PRF)}
+        만약 모든 \(\mcal{D}\)에 대해 \(\msf{Adv}_f(\mcal{D}) \le (\text{negligible function on \(n\)})\) 이하이면
+        \(f\)를 \textbf{pseudorandom permutation (PRP)}라고 부른다.
+    \end{block}
+\end{frame}
+
+\end{document}
